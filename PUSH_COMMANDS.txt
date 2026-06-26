@@ -1,0 +1,10 @@
+# Push helper for RoomFlow Overleaf source
+# Run these commands from a terminal with GitHub network access and valid GitHub credentials.
+
+git clone https://github.com/MinhmpcNguyen/roomflow_overleaf_latex_source-5-.git roomflow_overleaf_latex_source-5-
+cd roomflow_overleaf_latex_source-5-
+rsync -av --delete --exclude='.git' /Users/Yuki/TKNT/roomflow_overleaf_latex_source_push_ready_20260627_001936/ ./
+git status -sb
+git add -A
+git commit -m "Update RoomFlow thesis Overleaf source"
+git push origin main

@@ -1,0 +1,52 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.28, ranksep=0.42, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=15, penwidth=1.4, margin="0.16,0.10"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="INPUT"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    {rank=same; brief [label="User brief"]; room [label="Room geometry"]; inventory [label="Furniture inventory"];}
+  }
+  subgraph cluster_room {
+    label="1. ROOM INTERPRETATION"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    interpreter [label="RoomInterpreter\nNormalize boundary and fixed openings"];
+    room_model [label="Normalized room model\nPolygon, openings, zones, and conflicts"];
+    interpreter -> room_model;
+  }
+  subgraph cluster_semantic {
+    label="2. SEMANTIC PLANNING"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    {rank=same; style [label="Style policy compiler\nDensity, palette, and materials"]; relation [label="Relation planner\nClusters, anchors, and relations"];}
+    {rank=same; contract [label="Request contract\nRequired, preferred, optional, forbidden"]; count [label="Count director\nObject quantities and priorities"];}
+    style -> relation -> contract -> count;
+  }
+  subgraph cluster_program {
+    label="3. LAYOUT PROGRAM"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    merge [label="Merge planning artifacts"];
+    concepts [label="Generate anchor-first concepts"];
+    relation_plan [label="Compile solver relation plan"];
+    merge -> concepts -> relation_plan;
+  }
+  subgraph cluster_solver {
+    label="4. GEOMETRIC SOLVING"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    place [label="Place anchors and dependent objects"];
+    validate [label="Validate and repair\nContainment, collision, openings, circulation"];
+    score [label="Score feasible candidates"];
+    place -> validate -> score;
+  }
+  subgraph cluster_final {
+    label="5. FINALIZATION AND SELECTION"; color="#111111"; penwidth=1.4; fontname="Times New Roman"; fontsize=17;
+    refill [label="Restore eligible accessories"];
+    bind [label="Bind inventory, assets, and style"];
+    select [label="Remove duplicates and rank variants"];
+    output [label="Editable layout gallery"];
+    refill -> bind -> select -> output;
+  }
+
+  brief -> interpreter;
+  room -> interpreter;
+  inventory -> interpreter;
+  room_model -> style;
+  count -> merge;
+  relation_plan -> place;
+  score -> refill;
+}

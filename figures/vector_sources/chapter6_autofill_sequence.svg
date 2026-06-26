@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="930" viewBox="0 0 1500 930">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .head { font-size: 27px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+    .step { font-size: 24px; }
+    .box { stroke: #111; stroke-width: 2.2; fill: #fff; rx: 9; }
+    .life { stroke: #555; stroke-width: 1.7; stroke-dasharray: 8 7; }
+    .msg { stroke: #111; stroke-width: 2.1; fill: none; marker-end: url(#arrow); }
+    .return { stroke: #111; stroke-width: 2.1; stroke-dasharray: 8 6; fill: none; marker-end: url(#arrow); }
+  </style>
+
+  <rect class="box" x="40" y="30" width="180" height="62"/><text class="head" x="130" y="61">User</text>
+  <rect class="box" x="280" y="30" width="190" height="62"/><text class="head" x="375" y="61">Frontend</text>
+  <rect class="box" x="535" y="30" width="200" height="62"/><text class="head" x="635" y="61">Backend API</text>
+  <rect class="box" x="800" y="30" width="210" height="62"/><text class="head" x="905" y="61">Planner / LLM</text>
+  <rect class="box" x="1075" y="30" width="180" height="62"/><text class="head" x="1165" y="61">Solver</text>
+  <rect class="box" x="1320" y="30" width="150" height="62"/><text class="head" x="1395" y="61">Storage</text>
+
+  <line class="life" x1="130" y1="92" x2="130" y2="880"/>
+  <line class="life" x1="375" y1="92" x2="375" y2="880"/>
+  <line class="life" x1="635" y1="92" x2="635" y2="880"/>
+  <line class="life" x1="905" y1="92" x2="905" y2="880"/>
+  <line class="life" x1="1165" y1="92" x2="1165" y2="880"/>
+  <line class="life" x1="1395" y1="92" x2="1395" y2="880"/>
+
+  <line class="msg" x1="130" y1="150" x2="375" y2="150"/>
+  <text class="step" x="155" y="135">1. Enter room brief and geometry</text>
+  <line class="msg" x1="375" y1="240" x2="635" y2="240"/>
+  <text class="step" x="395" y="225">2. Submit automatic-layout request</text>
+  <line class="msg" x1="635" y1="330" x2="905" y2="330"/>
+  <text class="step" x="655" y="315">3. Interpret intent and build planning artifacts</text>
+  <line class="return" x1="905" y1="420" x2="635" y2="420"/>
+  <text class="step" x="660" y="405">4. Return objects, relations, quantities, and style policy</text>
+  <line class="msg" x1="635" y1="510" x2="1165" y2="510"/>
+  <text class="step" x="705" y="495">5. Solve constrained furniture placement</text>
+  <line class="return" x1="1165" y1="600" x2="635" y2="600"/>
+  <text class="step" x="745" y="585">6. Return validated candidates and diagnostics</text>
+  <line class="msg" x1="635" y1="690" x2="1395" y2="690"/>
+  <text class="step" x="800" y="675">7. Persist artifacts and selected variants</text>
+  <line class="return" x1="635" y1="780" x2="375" y2="780"/>
+  <text class="step" x="400" y="765">8. Return editable gallery payload</text>
+  <line class="return" x1="375" y1="855" x2="130" y2="855"/>
+  <text class="step" x="165" y="840">9. Display variants for review</text>
+</svg>

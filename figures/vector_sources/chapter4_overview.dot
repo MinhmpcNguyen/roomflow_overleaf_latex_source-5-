@@ -1,0 +1,19 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.15, nodesep=0.45, ranksep=0.48, splines=ortho];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=18, penwidth=1.5, margin="0.18,0.12"];
+  edge [color="#111111", penwidth=1.5, arrowsize=0.8];
+
+  input [label="Inputs\nUser brief\nRoom geometry\nFurniture inventory"];
+  intent [label="Interpret room and intent\nNormalize fixed geometry\nExtract objects, relations, style, and quantities"];
+  program [label="Build layout program\nActive objects, anchors,\nrelations, and constraints"];
+  solve [label="Solve and validate\nGenerate placements\nCheck, repair, and score candidates"];
+  gallery [label="Editable layout gallery\nDistinct variants\nObjects, scores, and diagnostics"];
+
+  {rank=same; input; gallery;}
+  {rank=same; intent; program;}
+  input -> intent;
+  input -> program;
+  intent -> solve;
+  program -> solve;
+  solve -> gallery;
+}

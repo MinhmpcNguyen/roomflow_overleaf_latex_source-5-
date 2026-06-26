@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820">
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .title { font-size: 31px; font-weight: 700; text-anchor: middle; }
+    .label { font-size: 28px; text-anchor: middle; dominant-baseline: middle; }
+    .actor { font-size: 28px; font-weight: 700; text-anchor: middle; }
+    .line { stroke: #111; stroke-width: 2.5; fill: none; }
+    .boundary { stroke: #111; stroke-width: 3; fill: #fff; }
+    .uc { stroke: #111; stroke-width: 2.5; fill: #fff; }
+  </style>
+  <rect class="boundary" x="260" y="40" width="690" height="730"/>
+  <text class="title" x="605" y="88">RoomFlow Interior Design Application</text>
+
+  <g class="line">
+    <circle cx="105" cy="185" r="22"/>
+    <line x1="105" y1="207" x2="105" y2="270"/>
+    <line x1="65" y1="230" x2="145" y2="230"/>
+    <line x1="105" y1="270" x2="70" y2="320"/>
+    <line x1="105" y1="270" x2="140" y2="320"/>
+  </g>
+  <text class="actor" x="105" y="355">Guest</text>
+
+  <g class="line">
+    <circle cx="105" cy="435" r="22"/>
+    <line x1="105" y1="457" x2="105" y2="520"/>
+    <line x1="65" y1="480" x2="145" y2="480"/>
+    <line x1="105" y1="520" x2="70" y2="570"/>
+    <line x1="105" y1="520" x2="140" y2="570"/>
+  </g>
+  <text class="actor" x="105" y="605">User</text>
+
+  <g class="line">
+    <circle cx="1095" cy="435" r="22"/>
+    <line x1="1095" y1="457" x2="1095" y2="520"/>
+    <line x1="1055" y1="480" x2="1135" y2="480"/>
+    <line x1="1095" y1="520" x2="1060" y2="570"/>
+    <line x1="1095" y1="520" x2="1130" y2="570"/>
+  </g>
+  <text class="actor" x="1095" y="605">Admin</text>
+
+  <ellipse class="uc" cx="510" cy="180" rx="175" ry="46"/>
+  <text class="label" x="510" y="180">Register or log in</text>
+
+  <ellipse class="uc" cx="490" cy="320" rx="185" ry="46"/>
+  <text class="label" x="490" y="320">Design room layout</text>
+
+  <ellipse class="uc" cx="490" cy="455" rx="205" ry="54"/>
+  <text class="label" x="490" y="443">Generate and edit</text>
+  <text class="label" x="490" y="472">perspective image</text>
+
+  <ellipse class="uc" cx="490" cy="590" rx="205" ry="54"/>
+  <text class="label" x="490" y="578">Manage saved layouts</text>
+  <text class="label" x="490" y="607">and renders</text>
+
+  <ellipse class="uc" cx="815" cy="300" rx="105" ry="44"/>
+  <text class="label" x="815" y="300">Manage users</text>
+
+  <ellipse class="uc" cx="815" cy="520" rx="115" ry="44"/>
+  <text class="label" x="815" y="520">Manage inventory</text>
+
+  <line class="line" x1="145" y1="230" x2="335" y2="190"/>
+  <line class="line" x1="145" y1="480" x2="305" y2="330"/>
+  <line class="line" x1="145" y1="480" x2="285" y2="455"/>
+  <line class="line" x1="145" y1="480" x2="285" y2="590"/>
+  <line class="line" x1="1055" y1="480" x2="920" y2="320"/>
+  <line class="line" x1="1055" y1="480" x2="930" y2="520"/>
+</svg>

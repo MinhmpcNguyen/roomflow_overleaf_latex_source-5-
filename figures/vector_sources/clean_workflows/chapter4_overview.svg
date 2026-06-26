@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="610" viewBox="0 0 1180 610">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8.5" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .lane { fill: #fff; stroke: #111; stroke-width: 2; }
+    .lane-head { fill: #f1f1f1; stroke: #111; stroke-width: 2; }
+    .lane-title { font-size: 24px; font-weight: 700; dominant-baseline: middle; letter-spacing: 0; }
+    .node { fill: #fff; stroke: #111; stroke-width: 2; }
+    .node-title { font-size: 23px; font-weight: 700; dominant-baseline: middle; }
+    .node-detail { font-size: 17px; dominant-baseline: middle; }
+    .label { font-size: 21px; dominant-baseline: middle; }
+    .arrow { fill: none; stroke: #111; stroke-width: 2.2; marker-end: url(#arrowhead); }
+    .line { fill: none; stroke: #111; stroke-width: 2.2; }
+  </style>
+  <rect x="30" y="55" width="190" height="500" rx="4" class="lane"/>
+<rect x="30" y="55" width="190" height="38" rx="4" class="lane-head"/>
+<text x="48" y="81" class="lane-title" text-anchor="start">INPUT</text>
+<rect x="55" y="130" width="140" height="90" rx="12" class="node"/>
+<text x="125" y="182" class="node-title" text-anchor="middle">User brief</text>
+<rect x="55" y="260" width="140" height="90" rx="12" class="node"/>
+<text x="125" y="297" class="node-title" text-anchor="middle">Room</text>
+<text x="125" y="322" class="node-detail" text-anchor="middle">geometry</text>
+<rect x="55" y="390" width="140" height="90" rx="12" class="node"/>
+<text x="125" y="442" class="node-title" text-anchor="middle">Inventory</text>
+<rect x="270" y="55" width="240" height="500" rx="4" class="lane"/>
+<rect x="270" y="55" width="240" height="38" rx="4" class="lane-head"/>
+<text x="288" y="81" class="lane-title" text-anchor="start">UNDERSTAND</text>
+<rect x="300" y="145" width="180" height="105" rx="12" class="node"/>
+<text x="390" y="189.5" class="node-title" text-anchor="middle">Interpret intent</text>
+<text x="390" y="214.5" class="node-detail" text-anchor="middle">objects, relations, style</text>
+<rect x="300" y="355" width="180" height="105" rx="12" class="node"/>
+<text x="390" y="399.5" class="node-title" text-anchor="middle">Model room</text>
+<text x="390" y="424.5" class="node-detail" text-anchor="middle">openings and constraints</text>
+<rect x="560" y="55" width="185" height="500" rx="4" class="lane"/>
+<rect x="560" y="55" width="185" height="38" rx="4" class="lane-head"/>
+<text x="578" y="81" class="lane-title" text-anchor="start">COMPILE</text>
+<rect x="585" y="250" width="135" height="115" rx="12" class="node"/>
+<text x="652.5" y="299.5" class="node-title" text-anchor="middle">Build layout</text>
+<text x="652.5" y="324.5" class="node-detail" text-anchor="middle">program</text>
+<text x="652.5" y="344.5" class="node-detail" text-anchor="middle">objects and anchors</text>
+<rect x="795" y="55" width="175" height="500" rx="4" class="lane"/>
+<rect x="795" y="55" width="175" height="38" rx="4" class="lane-head"/>
+<text x="813" y="81" class="lane-title" text-anchor="start">SOLVE</text>
+<rect x="815" y="250" width="135" height="115" rx="12" class="node"/>
+<text x="882.5" y="299.5" class="node-title" text-anchor="middle">Place and</text>
+<text x="882.5" y="324.5" class="node-detail" text-anchor="middle">validate</text>
+<text x="882.5" y="344.5" class="node-detail" text-anchor="middle">score candidates</text>
+<rect x="1020" y="55" width="130" height="500" rx="4" class="lane"/>
+<rect x="1020" y="55" width="130" height="38" rx="4" class="lane-head"/>
+<text x="1038" y="81" class="lane-title" text-anchor="start">OUTPUT</text>
+<rect x="1035" y="235" width="100" height="145" rx="12" class="node"/>
+<text x="1085" y="299.5" class="node-title" text-anchor="middle">Editable</text>
+<text x="1085" y="324.5" class="node-detail" text-anchor="middle">gallery</text>
+<text x="1085" y="344.5" class="node-detail" text-anchor="middle">variants and</text>
+<text x="1085" y="364.5" class="node-detail" text-anchor="middle">diagnostics</text>
+<polyline points="195,175 245,175 245,197 300,197" class="arrow"/>
+<polyline points="195,305 245,305 245,407 300,407" class="arrow"/>
+<polyline points="195,435 245,435 245,407 300,407" class="arrow"/>
+<polyline points="480,197 535,197 535,290 585,290" class="arrow"/>
+<polyline points="480,407 535,407 535,325 585,325" class="arrow"/>
+<line x1="720" y1="307" x2="815" y2="307" class="arrow"/>
+<line x1="950" y1="307" x2="1035" y2="307" class="arrow"/>
+</svg>

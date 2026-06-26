@@ -1,0 +1,32 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.24, ranksep=0.38, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=17, penwidth=1.4, margin="0.17,0.10"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; semantic [label="Semantic plan\nObjects, quantities, priorities, relations"]; room [label="Room model\nBoundary, openings, clearances"]; inventory [label="Inventory scope\nDimensions and metadata"];}
+  }
+  subgraph cluster_program {
+    label="OBJECT PROGRAM"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    active [label="Select active objects"];
+    relations [label="Compile anchors and relations"];
+    constraints [label="Compile hard constraints\nand soft preferences"];
+    program [label="Solver-ready object program"];
+    active -> relations -> constraints -> program;
+  }
+  subgraph cluster_solver {
+    label="GEOMETRIC SOLVER"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    concepts [label="Generate macro concepts"];
+    placement [label="Enumerate positions and rotations"];
+    validate [label="Validate and repair"];
+    scoring [label="Score feasible candidates"];
+    concepts -> placement -> validate -> scoring;
+  }
+  output [label="Candidate layouts\nCoordinates, rotations,\nscores, and diagnostics"];
+  semantic -> active;
+  room -> active;
+  inventory -> active;
+  program -> concepts;
+  scoring -> output;
+}

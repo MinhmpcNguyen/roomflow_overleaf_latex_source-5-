@@ -1,6 +1,6 @@
-\chapter{Theoretical Background and Technologies}
+\chapter{Theoretical Background for Interior Layout Design and Photorealistic Rendering}
 
-\section{LLM-Assisted Planning and Structured Agents}\label{sec:llm-assisted-planning-and-structured-agents}
+\section{LLM-Assisted Design Understanding and Planning}\label{sec:llm-assisted-planning-and-structured-agents}
 
 Large language models are used as reasoning components rather than direct coordinate generators. The planning pipeline decomposes the task into three groups of stages. The first group interprets the room and user brief. The second group converts style intent, required objects, optional objects, and object relations into structured JSON artifacts. The third group prepares solver-ready concepts and selects final gallery variants after geometric validation. This structure makes the LLM output inspectable, replayable, and suitable for ablation, while leaving coordinate decisions to the solver.
 
@@ -17,7 +17,7 @@ However, the LLM is not used as the only component for final object placement. I
 
 This separation follows recent LLM-based layout systems, where language models are used to plan objects and relations before placement or optimization is applied \cite{al2023LayoutgptCompositionalVisual}, \cite{al2024IDesignPersonalized}, \cite{al2024HolodeckLanguageGuided}, \cite{Littlefair2025FlairgptRepurposingLlms}. In this thesis, the same principle is adapted to an editable application workflow, so the LLM output remains structured, traceable, and usable by the solver, frontend, and evaluation modules.
 
-\section{Indoor Scene Synthesis and Asset-Grounded Layouts}\label{sec:indoor-scene-synthesis-and-asset-grounded-layouts}
+\section{Constraint-Aware Interior Layout Design}\label{sec:indoor-scene-synthesis-and-asset-grounded-layouts}
 
 Indoor scene synthesis studies how to generate plausible object sets and arrangements for a given room. ATISS models indoor scenes as unordered sets of objects conditioned on room type and floor plan \cite{Paschalidou2021AtissAutoregressiveTransformers}. DiffuScene uses a denoising diffusion model over unordered object attributes, including location, size, orientation, semantics, and geometry features \cite{Tang2024DiffusceneDenoisingDiffusion}. These approaches demonstrate that indoor layout generation is not only a text problem; it also requires structured object attributes and physical plausibility.
 
@@ -27,7 +27,7 @@ This asset-grounded approach is suitable for an applied thesis because it keeps 
 
 The implication for RoomFlow is that the system should not pursue a fully generative 3D scene as the primary output. A fully generative scene can be visually rich, but it may be difficult to edit, audit, or connect to a known furniture inventory. RoomFlow therefore uses a compact, asset-grounded layout as the structural truth and uses generative image models only after the layout has been selected.
 
-\section{Layout-Conditioned Image Generation and Editing}\label{sec:layout-conditioned-image-generation-and-editing}
+\section[Layout-Guided Photorealistic Rendering and Image Editing]{\texorpdfstring{Layout-Guided Photorealistic Rendering\\and Image Editing}{Layout-Guided Photorealistic Rendering and Image Editing}}\label{sec:layout-conditioned-image-generation-and-editing}
 
 The image-generation workflow in RoomFlow converts a selected 3D layout preview into a more realistic interior visualization. The provider image model is treated as a black-box text-and-image-conditioned generator \cite{OpenAI2026GptImage2}. Therefore, this thesis does not claim to train or modify the internal image model. The relevant theoretical point is conditional generation: instead of generating an interior image from text alone, the model receives additional visual and structural evidence that describes what should be preserved.
 
@@ -37,7 +37,7 @@ Image editing follows the same idea of controlled conditioning. Instruction-base
 
 \section{Evaluation Metrics for Layout and Image Quality}\label{sec:evaluation-metrics-for-layout-and-image-quality}
 
-The evaluation uses two groups of metrics. Layout metrics check whether a generated layout is geometrically valid, follows the user request, forms a usable room arrangement, and contains enough usable furniture. Image metrics check whether a generated or edited render preserves the selected layout, follows visual presets, performs the requested edit, and avoids unintended changes. Chapter 7 defines the exact scoring protocol, weights, benchmark cases, and ablation-specific stability metrics.
+The evaluation uses two groups of metrics. Layout metrics check whether a generated layout is geometrically valid, follows the user request, forms a usable room arrangement, and contains enough usable furniture. Image metrics check whether a generated or edited render preserves the selected layout, follows visual presets, performs the requested edit, and avoids unintended changes. Chapter 7 defines the layout scoring protocol, benchmark cases, weights, and ablation-specific stability metrics, while Chapter 8 defines the image-generation and image-editing evaluation.
 
 Vision-language models connect visual features with language reasoning by mapping image representations into a language-model reasoning space \cite{Liu2023VisualInstructionTuning}. Figure~\ref{fig:3-2} shows this architecture as background for the evaluation-time VLM checks used in the thesis. In this thesis, this idea is used only for evaluation-time inspection, not as a trained component of RoomFlow. VLM-based inspection judges camera framing, room shell, openings, major objects, and unauthorized additions. The final interpretation combines these checks with preset-fidelity checks and human edit scoring.
 
@@ -48,11 +48,11 @@ Vision-language models connect visual features with language reasoning by mappin
 \label{fig:3-2}
 \end{figure}
 
-For generated and edited images, traditional full-reference metrics such as SSIM and learned perceptual metrics such as LPIPS are useful references but are not sufficient for this system \cite{Wang2004ImageQualityAssessment}, \cite{Zhang2018UnreasonableEffectivenessDeep}. The actual evaluation therefore combines blank-image checks, provider runtime and token usage, vision-based layout fidelity, and structural preservation. Layout fidelity checks camera framing, room shell, openings, object inventory, object position, object scale, object silhouette, and unauthorized additions. Structural preservation is estimated with edge-map matching, monocular-depth similarity, and DINOv2 patch/object feature similarity, because self-supervised visual features can remain meaningful even when texture and lighting change \cite{al2023Dinov2LearningRobust}. The internal architectures of these perceptual reference models are not reproduced because they are not implemented as system modules; Chapter 7 focuses on the measurable signals they provide for the thesis experiments.
+For generated and edited images, traditional full-reference metrics such as SSIM and learned perceptual metrics such as LPIPS are useful references but are not sufficient for this system \cite{Wang2004ImageQualityAssessment}, \cite{Zhang2018UnreasonableEffectivenessDeep}. The actual evaluation therefore combines blank-image checks, provider runtime and token usage, vision-based layout fidelity, and structural preservation. Layout fidelity checks camera framing, room shell, openings, object inventory, object position, object scale, object silhouette, and unauthorized additions. Structural preservation is estimated with edge-map matching, monocular-depth similarity, and DINOv2 patch/object feature similarity, because self-supervised visual features can remain meaningful even when texture and lighting change \cite{al2023Dinov2LearningRobust}. The internal architectures of these perceptual reference models are not reproduced because they are not implemented as system modules; Chapter 8 focuses on the measurable signals they provide for the image experiments.
 
 The image-flow metrics also include preset fidelity and edit-specific fidelity. Preset fidelity checks whether the generated image follows the selected style, lighting, and scenery intent. Edit-instruction fidelity checks whether the requested add, remove, replace, or recolor operation was performed, while edit-scope fidelity measures whether changes outside the target region remain limited. These metrics are intentionally strict: a photorealistic image may look good but still fail if it moves the camera, replaces the sofa, changes a window, alters object scale, or edits outside the requested scope.
 
-These metrics also have limitations. Pixel-level and structural metrics may punish a successful render when texture, lighting, or material realism changes the image substantially. Conversely, a conservative edit can obtain high edge or depth similarity simply because it changes too little, even if it fails the requested operation. For this reason, Chapter 7 interprets automated image metrics together with preset checks and human edit scoring rather than treating any single metric as a complete judgment of quality.
+These metrics also have limitations. Pixel-level and structural metrics may punish a successful render when texture, lighting, or material realism changes the image substantially. Conversely, a conservative edit can obtain high edge or depth similarity simply because it changes too little, even if it fails the requested operation. For this reason, Chapter 8 interprets automated image metrics together with preset checks and human edit scoring rather than treating any single metric as a complete judgment of quality.
 
 \section{Web Technologies Used in the System}\label{sec:web-technologies-used-in-the-system}
 

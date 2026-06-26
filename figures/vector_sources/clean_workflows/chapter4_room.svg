@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="590" viewBox="0 0 1100 590">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8.5" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .lane { fill: #fff; stroke: #111; stroke-width: 2; }
+    .lane-head { fill: #f1f1f1; stroke: #111; stroke-width: 2; }
+    .lane-title { font-size: 24px; font-weight: 700; dominant-baseline: middle; letter-spacing: 0; }
+    .node { fill: #fff; stroke: #111; stroke-width: 2; }
+    .node-title { font-size: 23px; font-weight: 700; dominant-baseline: middle; }
+    .node-detail { font-size: 17px; dominant-baseline: middle; }
+    .label { font-size: 21px; dominant-baseline: middle; }
+    .arrow { fill: none; stroke: #111; stroke-width: 2.2; marker-end: url(#arrowhead); }
+    .line { fill: none; stroke: #111; stroke-width: 2.2; }
+  </style>
+  <rect x="25" y="25" width="1050" height="115" rx="4" class="lane"/>
+<rect x="25" y="25" width="1050" height="38" rx="4" class="lane-head"/>
+<text x="43" y="51" class="lane-title" text-anchor="start">INPUT</text>
+<rect x="80" y="68" width="250" height="50" rx="12" class="node"/>
+<text x="205" y="100" class="node-title" text-anchor="middle">Boundary polygon</text>
+<rect x="425" y="68" width="250" height="50" rx="12" class="node"/>
+<text x="550" y="100" class="node-title" text-anchor="middle">Doors and windows</text>
+<rect x="770" y="68" width="250" height="50" rx="12" class="node"/>
+<text x="895" y="100" class="node-title" text-anchor="middle">Room metadata</text>
+<rect x="25" y="165" width="1050" height="230" rx="4" class="lane"/>
+<rect x="25" y="165" width="1050" height="38" rx="4" class="lane-head"/>
+<text x="43" y="191" class="lane-title" text-anchor="start">ROOM MODELING</text>
+<rect x="55" y="240" width="215" height="65" rx="12" class="node"/>
+<text x="162.5" y="264.5" class="node-title" text-anchor="middle">Normalize geometry</text>
+<text x="162.5" y="289.5" class="node-detail" text-anchor="middle">scale and coordinates</text>
+<rect x="315" y="240" width="215" height="65" rx="12" class="node"/>
+<text x="422.5" y="264.5" class="node-title" text-anchor="middle">Attach openings</text>
+<text x="422.5" y="289.5" class="node-detail" text-anchor="middle">to wall segments</text>
+<rect x="575" y="240" width="215" height="65" rx="12" class="node"/>
+<text x="682.5" y="264.5" class="node-title" text-anchor="middle">Derive constraints</text>
+<text x="682.5" y="289.5" class="node-detail" text-anchor="middle">clearance and circulation</text>
+<rect x="835" y="240" width="215" height="65" rx="12" class="node"/>
+<text x="942.5" y="264.5" class="node-title" text-anchor="middle">Create room model</text>
+<text x="942.5" y="289.5" class="node-detail" text-anchor="middle">polygon, zones, openings</text>
+<line x1="270" y1="273" x2="315" y2="273" class="arrow"/>
+<line x1="530" y1="273" x2="575" y2="273" class="arrow"/>
+<line x1="790" y1="273" x2="835" y2="273" class="arrow"/>
+<rect x="315" y="430" width="470" height="120" rx="4" class="lane"/>
+<rect x="315" y="430" width="470" height="38" rx="4" class="lane-head"/>
+<text x="333" y="456" class="lane-title" text-anchor="start">OUTPUT</text>
+<rect x="365" y="475" width="370" height="55" rx="12" class="node"/>
+<text x="550" y="509.5" class="node-title" text-anchor="middle">Shared compact room model</text>
+<polyline points="942,305 942,410 550,410 550,430" class="arrow"/>
+<line x1="205" y1="140" x2="205" y2="240" class="arrow"/>
+<line x1="550" y1="140" x2="550" y2="210" class="arrow"/>
+<polyline points="550,210 422,210 422,240" class="arrow"/>
+<line x1="895" y1="140" x2="895" y2="240" class="arrow"/>
+</svg>

@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1380" viewBox="0 0 1000 1380">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .title { font-size: 32px; font-weight: 700; text-anchor: middle; }
+    .label { font-size: 27px; text-anchor: middle; dominant-baseline: middle; }
+    .line { stroke: #111; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
+    .plain { stroke: #111; stroke-width: 2.5; fill: none; }
+    .box { stroke: #111; stroke-width: 2.5; fill: #fff; rx: 10; }
+  </style>
+  <text class="title" x="500" y="45">RoomFlow Design Process</text>
+  <circle cx="500" cy="90" r="17" fill="#111"/>
+  <line class="line" x1="500" y1="107" x2="500" y2="145"/>
+
+  <rect class="box" x="355" y="145" width="290" height="70"/>
+  <text class="label" x="500" y="180">Authenticate</text>
+  <line class="line" x1="500" y1="215" x2="500" y2="255"/>
+
+  <rect class="box" x="335" y="255" width="330" height="75"/>
+  <text class="label" x="500" y="293">Create or load room</text>
+  <line class="plain" x1="500" y1="330" x2="500" y2="380"/>
+  <line class="line" x1="500" y1="380" x2="295" y2="380"/>
+  <line class="line" x1="500" y1="380" x2="705" y2="380"/>
+
+  <rect class="box" x="125" y="380" width="340" height="85"/>
+  <text class="label" x="295" y="423">Manual layout editing</text>
+  <rect class="box" x="535" y="380" width="340" height="85"/>
+  <text class="label" x="705" y="413">Automatic layout</text>
+  <text class="label" x="705" y="442">generation</text>
+
+  <line class="plain" x1="295" y1="465" x2="295" y2="520"/>
+  <line class="plain" x1="705" y1="465" x2="705" y2="520"/>
+  <line class="plain" x1="295" y1="520" x2="705" y2="520"/>
+  <line class="line" x1="500" y1="520" x2="500" y2="565"/>
+
+  <rect class="box" x="315" y="565" width="370" height="78"/>
+  <text class="label" x="500" y="604">Select and edit layout</text>
+  <line class="line" x1="500" y1="643" x2="500" y2="690"/>
+
+  <rect class="box" x="330" y="690" width="340" height="78"/>
+  <text class="label" x="500" y="729">Preview 3D scene</text>
+  <line class="line" x1="500" y1="768" x2="500" y2="815"/>
+
+  <rect class="box" x="300" y="815" width="400" height="78"/>
+  <text class="label" x="500" y="854">Generate perspective image</text>
+  <line class="line" x1="500" y1="893" x2="500" y2="940"/>
+
+  <rect class="box" x="330" y="940" width="340" height="78"/>
+  <text class="label" x="500" y="979">Edit perspective image</text>
+  <line class="line" x1="500" y1="1018" x2="500" y2="1065"/>
+
+  <rect class="box" x="315" y="1065" width="370" height="78"/>
+  <text class="label" x="500" y="1104">Save layouts and renders</text>
+
+  <path class="line" d="M685,1104 H850 V604 H685"/>
+  <line class="line" x1="500" y1="1143" x2="500" y2="1195"/>
+  <circle cx="500" cy="1225" r="26" class="plain"/>
+  <circle cx="500" cy="1225" r="15" fill="#111"/>
+
+  <rect class="box" x="35" y="990" width="225" height="95"/>
+  <text class="label" x="147" y="1022">Admin manages</text>
+  <text class="label" x="147" y="1055">users and inventory</text>
+</svg>

@@ -1,0 +1,25 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.28, ranksep=0.42, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=17, penwidth=1.4, margin="0.17,0.10"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="EDIT INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; source [label="Approved source render"]; instruction [label="Edit instruction\nAdd, remove, replace, or recolor"]; target [label="Target scope\nObject identifier, box, region, or mask"];}
+  }
+  subgraph cluster_prepare {
+    label="EDIT REQUEST PREPARATION"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    preflight [label="Visual preflight\nConfirm target and likely risks"];
+    preserve [label="Preservation contract\nCamera, shell, openings, unrelated objects"];
+    package [label="Assemble edit package"];
+    preflight -> preserve -> package;
+  }
+  provider [label="Provider image-editing model"];
+  audit [label="Save edited render and audit metadata"];
+  output [label="Localized edited image"];
+
+  source -> preflight;
+  instruction -> preflight;
+  target -> preflight;
+  package -> provider -> audit -> output;
+}

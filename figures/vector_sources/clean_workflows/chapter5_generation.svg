@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="730" viewBox="0 0 1140 730">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8.5" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .lane { fill: #fff; stroke: #111; stroke-width: 2; }
+    .lane-head { fill: #f1f1f1; stroke: #111; stroke-width: 2; }
+    .lane-title { font-size: 24px; font-weight: 700; dominant-baseline: middle; letter-spacing: 0; }
+    .node { fill: #fff; stroke: #111; stroke-width: 2; }
+    .node-title { font-size: 23px; font-weight: 700; dominant-baseline: middle; }
+    .node-detail { font-size: 17px; dominant-baseline: middle; }
+    .label { font-size: 21px; dominant-baseline: middle; }
+    .arrow { fill: none; stroke: #111; stroke-width: 2.2; marker-end: url(#arrowhead); }
+    .line { fill: none; stroke: #111; stroke-width: 2.2; }
+  </style>
+  <rect x="25" y="25" width="1090" height="120" rx="4" class="lane"/>
+<rect x="25" y="25" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="51" class="lane-title" text-anchor="start">LAYOUT-DERIVED INPUT</text>
+<rect x="65" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="215" y="102.5" class="node-title" text-anchor="middle">3D snapshot</text>
+<rect x="420" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="570" y="102.5" class="node-title" text-anchor="middle">Visible-object map</text>
+<rect x="775" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="925" y="102.5" class="node-title" text-anchor="middle">Visual preset</text>
+<rect x="25" y="175" width="1090" height="210" rx="4" class="lane"/>
+<rect x="25" y="175" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="201" class="lane-title" text-anchor="start">CONDITIONING COMPILER</text>
+<rect x="55" y="245" width="220" height="65" rx="12" class="node"/>
+<text x="165" y="284.5" class="node-title" text-anchor="middle">Build visual guide</text>
+<rect x="315" y="245" width="220" height="65" rx="12" class="node"/>
+<text x="425" y="284.5" class="node-title" text-anchor="middle">Scene contract</text>
+<rect x="575" y="245" width="220" height="65" rx="12" class="node"/>
+<text x="685" y="284.5" class="node-title" text-anchor="middle">Object contract</text>
+<rect x="835" y="245" width="230" height="65" rx="12" class="node"/>
+<text x="950" y="284.5" class="node-title" text-anchor="middle">Prompt package</text>
+<line x1="275" y1="278" x2="315" y2="278" class="arrow"/>
+<line x1="535" y1="278" x2="575" y2="278" class="arrow"/>
+<line x1="795" y1="278" x2="835" y2="278" class="arrow"/>
+<rect x="25" y="415" width="1090" height="140" rx="4" class="lane"/>
+<rect x="25" y="415" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="441" class="lane-title" text-anchor="start">PROVIDER EXECUTION</text>
+<rect x="135" y="462" width="310" height="60" rx="12" class="node"/>
+<text x="290" y="499" class="node-title" text-anchor="middle">Image model</text>
+<rect x="485" y="462" width="310" height="60" rx="12" class="node"/>
+<text x="640" y="499" class="node-title" text-anchor="middle">Save output and metadata</text>
+<rect x="835" y="462" width="230" height="60" rx="12" class="node"/>
+<text x="950" y="499" class="node-title" text-anchor="middle">Perspective image</text>
+<line x1="445" y1="492" x2="485" y2="492" class="arrow"/>
+<line x1="795" y1="492" x2="835" y2="492" class="arrow"/>
+<rect x="315" y="590" width="510" height="115" rx="4" class="lane"/>
+<rect x="315" y="590" width="510" height="38" rx="4" class="lane-head"/>
+<text x="333" y="616" class="lane-title" text-anchor="start">OUTPUT</text>
+<rect x="365" y="638" width="410" height="48" rx="12" class="node"/>
+<text x="570" y="669" class="node-title" text-anchor="middle">Photorealistic render linked to layout</text>
+<line x1="215" y1="145" x2="215" y2="245" class="arrow"/>
+<line x1="570" y1="145" x2="570" y2="210" class="arrow"/>
+<polyline points="570,210 165,210 165,245" class="arrow"/>
+<line x1="925" y1="145" x2="925" y2="245" class="arrow"/>
+<polyline points="950,522 950,572 570,572 570,590" class="arrow"/>
+</svg>

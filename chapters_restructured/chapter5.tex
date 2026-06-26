@@ -1,241 +1,123 @@
-% Restructured book: solution for problem 2.
-\chapter{Solution for Problem 2: Snapshot-Guided Image Generation and Editing}
+% Restructured book: photorealistic image generation and editing.
+\chapter{Photorealistic Interior Image Generation and Editing}
 
-Chapter 5 presents the image-generation and editing workflow built on the editable layout produced in Chapter 4. Its goal is not only to create an attractive interior image. The render should remain traceable to the selected camera view, room shell, major furniture, openings, and relative object positions. The editable layout therefore remains the structural source of truth, while the generated image is a visual interpretation of that layout.
+This chapter presents the Layout-Guided Photorealistic Rendering and Editing component of RoomFlow. While Chapter 4 focuses on generating a structured and editable furniture layout, this chapter explains how the selected 3D layout is converted into a photorealistic interior design output. The main goal is not to generate an interior image freely from text, but to produce a realistic render that remains consistent with the room geometry, camera view, openings, and furniture arrangement defined by the selected layout. To achieve this, RoomFlow uses the 3D preview as a layout reference, captures a snapshot from the chosen camera view, and combines it with structured preservation constraints and rendering instructions. The chapter also describes the image-editing workflow, where users can modify selected visual details while preserving the main room structure and unrelated furniture.
 
-\section{Image Generation}\label{sec:problem2-image-generation}
+\section{Overall Processing Flow}\label{sec:problem2-overall-processing-flow}
 
-The image-generation flow begins after the user selects or edits a layout. The frontend reconstructs the layout in a Three.js-based 3D preview and captures a snapshot. The backend then combines this visual snapshot with layout metadata, visible-object contracts, style presets, lighting presets, and negative constraints before calling the image model.
+\hyperref[fig:5-1]{Figure~5.1} summarizes how RoomFlow turns a selected layout into visual render artifacts. The editable layout produced in Chapter 4 acts as the structural source of truth for this pipeline. It contains the room geometry, openings, furniture objects, positions, orientations, and display metadata. The image-generation and image-editing workflows do not replace this structured layout. Instead, they create visual artifacts derived from it, so that the user can inspect the design in a more realistic form while the underlying layout remains editable.
 
-\begin{figure}[!htbp]
+The flow has two connected branches. The first branch is photorealistic generation. It converts the selected layout into a 3D preview, captures a snapshot from the chosen camera view, and compiles a generation package for the image model. This package combines the snapshot, visible-object information, visual presets, and preservation constraints. By using the layout-derived snapshot as visual evidence, the system reduces the risk of generating an attractive image that no longer matches the selected room structure and furniture arrangement.
+
+The second branch is localized editing. It starts from an existing render and applies a user-requested change to a target object or region. The edit request may involve adding, removing, replacing, or recoloring an element. Before sending the request to the image model, RoomFlow prepares the source render, edit instruction, target scope, and preservation constraints. The purpose is to apply the intended change while keeping unrelated furniture, camera framing, room shell, and openings as stable as possible.
+
+Both branches produce traceable render artifacts. A generated render remains linked to the selected layout, while an edited render remains linked to the source render and, when possible, to the original layout. This traceability is important because the image is only a visual output, not the authoritative design state. If a generated or edited image changes the room geometry, opening positions, camera view, or major furniture arrangement unintentionally, it is treated as a rendering or editing failure rather than a valid update to the layout.
+
+The following sections describe these two branches in detail. Section 5.2 presents the image-rendering workflow, including snapshot-based layout conditioning, scene and visible-object contracts, and structured prompt packaging. Section 5.3 presents the image-editing workflow, including edit request construction, target scope, target validation, preservation constraints, and edited render output.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.96\textwidth]{figures/chapter5/problem2_flow_overview.png}
-\caption{Overall processing flow for snapshot-guided image generation and editing.}
+\includegraphics[width=0.98\textwidth]{figures/chapter5/problem2_flow_overview.pdf}
+\caption{Overall flow from the selected editable layout to photorealistic generation, localized editing, and traceable render artifacts.}
 \label{fig:5-1}
 \end{figure}
 
-The input to image generation is the selected editable layout and the user's visual intent:
+\section{Layout-Guided Photorealistic Rendering}\label{sec:problem2-image-generation}
 
-\begin{verbatim}
-{
-  "layout_id": "candidate_07",
-  "camera": {"preset": "corner_view", "height_m": 1.6},
-  "style_preset": "warm_minimal",
-  "lighting_preset": "soft_daylight",
-  "scenery_preset": "urban_window_view"
-}
-\end{verbatim}
+The rendering branch converts the selected editable layout into a photorealistic perspective render. The input is not a text prompt alone, but a rendering package derived from the selected 3D layout. This package contains three main groups of information: a snapshot captured from the selected camera view, visible-object and preservation information, and visual presets for the desired appearance. The result is an image that corresponds to the chosen layout, while the original layout remains the main version that users can continue to edit.
 
-The final output is a render artifact linked back to the layout. In the experiments, the main workflow is called single-edit edge/silhouette-guided rendering, abbreviated as SE-ESG in Chapter 7. The abbreviated name is used only in compact tables and charts; the stored artifact keeps the full workflow name for reproducibility.
+For example, consider a living-room layout viewed from the selected camera position. The snapshot shows the room from that view. The visible-object information records the main objects seen by the camera, such as the sofa, coffee table, TV console, shelving, rug, and window. The preservation information specifies what should not change, such as the room shell, window position, camera framing, and major furniture arrangement. The visual presets describe the intended appearance, such as warm materials with soft daylight.
 
-\begin{verbatim}
-{
-  "render_id": "render_2026_001",
-  "source_layout_id": "candidate_07",
-  "workflow_variant": "edge_silhouette_guided_render",
-  "image_path": "renders/render_2026_001.png",
-  "preservation_targets": ["room_shell", "openings", "major_furniture"],
-  "metadata": {"runtime_s": 60.8, "input_tokens": 4078}
-}
-\end{verbatim}
+\hyperref[fig:5-2]{Figure~5.2} summarizes this layout-guided rendering flow. The system first reconstructs the selected layout in the 3D preview and captures the chosen view as a snapshot. It then combines the snapshot with visible-object information, preservation constraints, and visual presets before forming the final rendering request for the image model. The following subsections explain these steps in order: snapshot-based layout conditioning, visible-object and preservation contracts, and visual preset control with rendering request assembly.
 
-This structure treats the generated image as a visualization layer derived from the layout. The layout remains the editable design state; the image helps the user understand appearance, lighting, material, and atmosphere.
-
-\hyperref[fig:5-2]{Figure~5.2} expands only the image-generation branch of \hyperref[fig:5-1]{Figure~5.1}.
-
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth]{figures/chapter5/image_generation_flow.png}
-\caption{Detailed flow of the image-generation branch.}
+\includegraphics[width=0.98\textwidth]{figures/chapter5/image_generation_flow.pdf}
+\caption{Image-generation flow that compiles the 3D snapshot, visible objects, visual preset, and preservation evidence into a provider request.}
 \label{fig:5-2}
 \end{figure}
 
-\noindent Table~\ref{tab:5-1} lists the main intermediate artifacts that make the image-generation request traceable to the selected layout.
+\subsection{Snapshot-Based Layout Conditioning}\label{subsec:problem2-technique-snapshot}
 
-\begingroup
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}p{2.6cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
-\caption{Main artifacts used by the image-generation workflow.}\label{tab:5-1}\\
-\hline
-Artifact & Generated by & Main contents & Purpose \\
-\hline
-3D snapshot & Frontend preview & Source image, camera metadata, visible objects, openings, room shell facts & Provides visual evidence of the selected layout. \\
-\hline
-Layout guide & Preview and backend compiler & Edge/silhouette, object boxes, optional locked-geometry references & Makes geometry and object boundaries more explicit. \\
-\hline
-Scene contract & Backend prompt compiler & Camera, room shell, openings, object count, preserve/change rules & Reduces ambiguity in the provider request. \\
-\hline
-Visible-object contract & Backend prompt compiler & Object ids, categories, screen-space boxes, approximate relations & Helps preserve major furniture identity and position. \\
-\hline
-Prompt package & Backend renderer & Snapshot references, contracts, presets, negative constraints & Final provider-facing request. \\
-\hline
-\end{xltabular}
-\endgroup
+Snapshot-based layout conditioning is the first step used to keep the generated render close to the selected layout. A snapshot is a captured view of the 3D preview from the camera angle chosen by the user. It shows the visible room structure, openings, furniture positions, and approximate object shapes before photorealistic rendering. In RoomFlow, this snapshot acts as layout evidence for the image model, so the model does not have to infer the room arrangement from text alone.
 
-\subsection{Technique 1: Snapshot-Based Layout Conditioning}\label{subsec:problem2-technique-snapshot}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.94\textwidth]{figures/chapter5/snapshot_layout_conditioning_example.png}
+\caption{Snapshot-based layout conditioning from a real living-room case. The image captures the selected 3D camera view before photorealistic rendering.}
+\label{fig:5-snapshot-layout-conditioning}
+\end{figure}
 
-Snapshot-based layout conditioning is the main bridge between the editable layout and the image model. A snapshot is a structured capture of the 3D preview. It contains the source view, camera metadata, visible objects, approximate screen-space boxes, room shell, openings, and optional guide images. This gives the image model visual evidence of what should remain stable.
+The main purpose of the snapshot is to reduce ambiguity during image generation. If the image model only receives a text instruction such as ``render this bedroom in a Japandi style,'' it may create a visually pleasing room but change the camera view, move furniture, add extra objects, or alter the window position. By providing the selected 3D view, RoomFlow gives the model a concrete reference for the room shell, camera framing, furniture grouping, and spatial arrangement that should be preserved.
 
-\begin{verbatim}
-{
-  "snapshot": {
-    "image": "snapshot.png",
-    "camera": {"fov": 55, "position": [3.2, 1.6, 4.1]},
-    "visible_objects": [
-      {"id": "sofa_1", "type": "sofa", "bbox": [0.18,0.42,0.45,0.71]},
-      {"id": "tv_1", "type": "tv_console", "bbox": [0.68,0.39,0.90,0.62]}
-    ],
-    "openings": [{"id": "window_1", "bbox": [0.42,0.15,0.62,0.28]}]
-  }
-}
-\end{verbatim}
+The snapshot is not expected to be a final realistic image. It may contain simple geometry, basic materials, and approximate asset shapes. Its role is to communicate layout structure rather than visual quality. The image model is then expected to improve realism, lighting, materials, and atmosphere while following the spatial evidence provided by the snapshot.
 
-This technique is motivated by conditional image-generation research, where spatial evidence such as edges, depth, or segmentation improves output control \cite{Zhang2023AddingConditionalControl}. RoomFlow applies the same principle at the workflow level. The provider receives the selected 3D view, edge or silhouette guides, visible-object metadata, and preservation instructions rather than a text prompt alone. The thesis does not claim that the provider model is retrained or that a ControlNet-style conditioning branch is exposed. The implemented contribution is a snapshot-guided provider workflow built around the editable layout.
+This design also keeps the generated render connected to the editable layout. The render is considered a visual output derived from the selected layout, not a replacement for it. If the resulting image changes the room shape, camera framing, opening positions, or major furniture arrangement, the change is treated as layout drift rather than a valid improvement. This issue is evaluated explicitly in Chapter 8.
 
-Snapshot guidance does not guarantee pixel-level geometric preservation. It supplies additional evidence about the selected camera, room shell, openings, and visible objects, with the expectation of reducing unnecessary changes relative to weaker prompting workflows. Remaining layout drift is measured explicitly in Chapter 7.
+\subsection{Visible-Object and Preservation Contracts}\label{subsec:problem2-technique-contract}
 
-\subsection{Technique 2: Scene Contract and Visible-Object Contract}\label{subsec:problem2-technique-contract}
+Visible-object and preservation contracts specify which parts of the selected view should remain stable during rendering. The snapshot shows the layout visually, but it may not clearly state which objects are important or which changes are unacceptable. RoomFlow therefore adds preservation information to make the protected layout elements explicit.
 
-The second technique is contract-based prompting. A scene contract is a concise text-and-JSON description of what the model must preserve: camera framing, room shell, opening count and position, main visible objects, approximate relative positions, and scale relationships. A visible-object contract lists layout-critical objects so that the image request is more concrete than a generic style prompt.
+The contract combines three types of evidence. A camera-aligned structural guide highlights visible object boundaries and room surfaces in the same view as the snapshot. Visible-object information records the main objects seen by the camera, including their categories, approximate image regions, and layout roles. Preservation constraints state what should not change, such as camera framing, room shell, door and window positions, object count, object scale, relative depth order, and major furniture arrangement.
 
-\begin{verbatim}
-{
-  "scene_contract": {
-    "preserve": [
-      "same camera view",
-      "one north window",
-      "sofa facing TV console",
-      "rug centered in seating area"
-    ],
-    "may_change": ["materials", "lighting", "decorative texture"],
-    "must_not_change": [
-      "room shape",
-      "door position",
-      "major furniture count"
-    ]
-  }
-}
-\end{verbatim}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{figures/chapter5/visible_object_contract_example.png}
+\caption{Visible-object and preservation evidence from the same living-room case. The structural guide follows the selected camera view and highlights visible object boundaries and room surfaces.}
+\label{fig:5-visible-object-contract}
+\end{figure}
 
-This contract does not make the image model an exact geometric renderer. It reduces ambiguity. The model can still improve realism, materials, lighting, and atmosphere, but it is repeatedly instructed that the spatial arrangement comes from the selected layout.
+\hyperref[fig:5-visible-object-contract]{Figure~\ref*{fig:5-visible-object-contract}} illustrates these signals using the same living-room case as the snapshot example. The goal is not to force pixel-level copying or turn the image model into an exact geometric renderer. Instead, the contracts reduce ambiguity: the model may improve materials, lighting, shadows, and atmosphere, but the room structure and visible furniture arrangement should remain tied to the selected editable layout. If these protected elements change unnecessarily, the result is treated as layout drift and evaluated in Chapter 8.
 
-The practical effect can be explained by comparing two request forms. Without a scene contract, the prompt may only ask the model to make the room ``warm minimalist'', which leaves object count, opening placement, and camera framing underspecified. With the scene and visible-object contracts, the request explicitly states which objects, openings, and spatial relations must remain stable and which visual properties may change. The expected improvement is therefore not exact geometric rendering, but fewer unnecessary changes to object count, room shell, and camera view. Chapter 7 evaluates this effect through the image-flow variants.
+\subsection{Visual Preset Control and Rendering Request Assembly}\label{subsec:problem2-prompt-optimization}
 
-\subsection{Technique 3: Structured Prompt Packaging and Preset Control}\label{subsec:problem2-prompt-optimization}
-
-In this system, prompt optimization means structured prompt packaging rather than automatic search over prompt variants. Each provider-facing request is organized into stable sections: source layout summary, preservation requirements, visible object list, style preset, lighting preset, scenery preset, and negative constraints. This structure makes requests easier to inspect, compare, and reproduce across experiments.
-
-\begin{verbatim}
-{
-  "prompt_package": {
-    "layout_summary": "living room, corner camera, sofa faces TV",
-    "style": "warm minimal, light wood, neutral fabric",
-    "lighting": "soft daylight from the north window",
-    "scenery": "subtle urban exterior",
-    "negative_constraints": [
-      "do not move the sofa",
-      "do not add extra windows",
-      "do not change camera angle"
-    ]
-  }
-}
-\end{verbatim}
+The final rendering request combines layout evidence with visual preset control. The provider-facing request is organized into stable sections: source snapshot, visible-object information, preservation requirements, style preset, lighting preset, scenery preset, and negative constraints. This structure makes requests easier to inspect, compare, and reproduce across experiments.
 
 The style, lighting, and scenery presets are separated from geometry. A style preset may request modern, minimalist, boho, or warm material choices. A lighting preset may request daylight, soft evening light, or studio-like clarity. A scenery preset may describe the outside view or environmental mood. These presets should improve visual appearance without changing the underlying layout goal.
 
-Figure~\ref{fig:5-3} shows a real create-flow example with the source snapshot, edge/silhouette guidance, and generated render placed side by side.
+\hyperref[fig:5-3]{Figure~\ref*{fig:5-3}} shows the generated render from the same living-room case used in the snapshot and preservation examples.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.96\textwidth]{figures/chapter5/create_case_example.png}
-\caption{Real create-flow example from a bedroom rest/study case.}
+\includegraphics[width=0.92\textwidth]{figures/chapter5/create_render_only_example.png}
+\caption{Generated render from the same living-room case used for snapshot and preservation-contract illustration.}
 \label{fig:5-3}
 \end{figure}
 
-In Figure~\ref{fig:5-3}, the left panel is the 3D snapshot, the middle panel is the edge/silhouette guide, and the right panel is the generated render. The window direction, camera view, room shell, and main furniture grouping are the preservation targets.
+In \hyperref[fig:5-3]{Figure~\ref*{fig:5-3}}, the render improves material realism and lighting while preserving the main camera view, room shell, window position, and furniture grouping established by the layout-derived evidence in the previous subsections.
 
-\section{Image Editing}\label{sec:problem2-image-editing}
+\section{Localized Image Editing}\label{sec:problem2-image-editing}
 
-Image editing starts from an approved render rather than from a blank prompt. The user chooses an edit operation, such as add, remove, replace, or recolor. The system prepares the source render, target object or region, requested operation, optional replacement reference, and preservation constraints. The purpose is to make the edit local and controllable.
+Localized image editing allows the user to revise a generated render without restarting the complete layout and rendering workflow. Instead of generating a new image from a blank prompt, the system starts from an approved source render and applies a specific edit operation, such as adding, removing, replacing, or recoloring an element. The purpose is to make a targeted visual change while keeping the camera view, room shell, openings, and unrelated furniture stable.
 
-Figure~\ref{fig:5-4} summarizes the image-editing module from source render and target scope to edited output and saved artifact.
+\hyperref[fig:5-4]{Figure~\ref*{fig:5-4}} summarizes the localized editing flow. The input consists of the approved source render, the user's edit instruction, and a target object or target region. The system then prepares the edit scope, checks whether the target is clear enough, adds preservation constraints, and sends a controlled editing request to the image model. The output is an edited render linked to the source render and target scope, so that later evaluation can check both edit success and unintended changes outside the edited region.
 
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.98\textwidth]{figures/chapter5/image_editing_flow.png}
-\caption{Detailed flow of the image editing module.}
+\includegraphics[width=0.98\textwidth]{figures/chapter5/image_editing_flow.pdf}
+\caption{Localized image-editing flow from source render, instruction, and target scope to an audited edited artifact.}
 \label{fig:5-4}
 \end{figure}
 
+This editing branch is useful because not every visual change requires a new layout or a new full render. For example, the user may want to add a wall artwork, recolor a sofa, remove a small object, or replace one furniture item while keeping the rest of the room unchanged. These operations are treated as image-level refinements. They do not update the editable 2D layout automatically, because the structured layout remains the main design state of RoomFlow.
+
 \subsection{Edit Request and Target Scope}\label{subsec:problem2-edit-target-scope}
 
-Each edit request is connected to a target scope whenever possible. If the target corresponds to a known layout object, the system can reuse its object id and approximate visible box. If the target exists only in the generated render or is not linked reliably to layout data, the user can select a manual region on the image. When localization is reliable, the system uses a mask; otherwise, it falls back to a normalized bounding box and a textual target description. This scope reduces ambiguity because the image model is told both what to change and where the change should occur. Instruction-based editing shows that an input image and a written instruction can define an edit \cite{Brooks2023Instructpix2pixLearningFollow}; RoomFlow adds layout-derived object scope so that the edit better fits an interactive interior-design workflow.
+Each localized edit is defined by two elements: an edit request and a target scope. The edit request specifies what the user wants to change, such as adding, removing, replacing, or recoloring an element. The target scope specifies where the change should happen in the source render.
 
-\begin{verbatim}
-{
-  "source_render_id": "render_2026_001",
-  "operation": "add",
-  "target": {
-    "region_id": "manual_add_box_1",
-    "bbox": [0.73, 0.26, 0.86, 0.47]
-  },
-  "instruction": "Add a framed landscape wall art in the target region"
-}
-\end{verbatim}
+When the target corresponds to a known layout object, RoomFlow can reuse its object identity and approximate visible region. When the target exists only in the generated render or cannot be reliably linked to layout data, the user can mark a region directly on the image. This allows the same editing workflow to support both layout-linked edits and image-only refinements.
 
-\subsection{Visual Preflight and Preservation Constraints}\label{subsec:problem2-edit-preflight}
+The target scope reduces ambiguity because the image model is told both what to change and where the change should occur. For example, adding wall art is more controlled when the target is a selected wall region, and recoloring a sofa is safer when the target is linked to the visible sofa area. This localized formulation helps apply the requested edit while limiting unnecessary changes to the camera view, room shell, openings, and unrelated furniture.
 
-Before the provider call, the visual preflight stage prepares the edit scope and detects obvious target ambiguity. If a mask can be produced, it marks the region that should change. If a bounding box is used, it provides a weaker but still useful spatial cue. The edit request also states which parts of the room should remain fixed, such as camera view, room shell, openings, and unrelated furniture.
+\subsection{Target Validation and Preservation Constraints}\label{subsec:problem2-edit-preflight}
 
-\begin{verbatim}
-{
-  "edit_preflight": {
-    "target_found": true,
-    "mask_path": "masks/manual_add_box_1.png",
-    "preserve": [
-      "camera_view",
-      "room_shell",
-      "door_and_window_positions",
-      "unrelated_furniture"
-    ],
-    "allowed_change_region": "target_box_or_mask"
-  }
-}
-\end{verbatim}
+Before sending the edit request to the image model, RoomFlow checks whether the selected target can be edited clearly. If the target is linked to a known layout object, the system uses its visible region as the editing area. If the target is selected directly on the image, the marked region is used instead. This validation step helps ensure that the requested change has a clear location in the source render.
 
-The visual preflight stage is used for control rather than aesthetics. Its purpose is to reduce unintended changes before the provider call. For example, it helps prevent a recolor request from changing the whole room, a replacement request from moving the camera, or a remove request from deleting unrelated furniture. The stage therefore defines the allowed edit region and the protected elements before image editing begins.
+The system then defines preservation constraints for the parts of the image that should remain unchanged. These constraints protect the camera view, room shell, openings, major furniture arrangement, and unrelated objects. For example, recoloring a sofa should not change the wall, replacing a chair should not move the table, and removing a small object should not remove nearby furniture.
 
-Table~\ref{tab:5-2} defines the compact visual-preflight schema used to pass target localization and preservation constraints into the edit request.
+\hyperref[fig:5-5]{Figure~\ref*{fig:5-5}} illustrates this process with a real edit-flow example. The selected target region shows where the requested operation is allowed, while the rest of the room is treated as protected context. This step does not guarantee perfect editing, but it reduces ambiguity and provides a clearer basis for evaluating edit success and structure preservation in Chapter 8.
 
-\begingroup
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}X|}
-\caption{Visual preflight output schema for localized image editing.}\label{tab:5-2}\\
-\hline
-Field & Interpretation \\
-\hline
-target\_found & Whether the requested object or region can be localized before editing. \\
-\hline
-target\_source & Layout object id, visible-object box, or manual region used as the target source. \\
-\hline
-mask\_path / bbox & Strong mask if available; otherwise normalized image box. \\
-\hline
-operation & Add, remove, replace, or recolor request passed to the provider. \\
-\hline
-preserve & Camera, room shell, openings, unrelated furniture, and other protected elements. \\
-\hline
-failure\_reason & Explanation returned when the target is missing or too ambiguous. \\
-\hline
-\end{xltabular}
-\endgroup
-
-Figure~\ref{fig:5-5} illustrates the visual meaning of this schema: the orange target region indicates where the add operation is allowed, while the rest of the room is protected by preservation constraints.
-
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter5/edit_case_example.png}
 \caption{Real edit-flow example: the source render is edited by applying the requested operation to the marked target region while preserving the camera, room shell, and unrelated furniture.}
@@ -244,34 +126,15 @@ Figure~\ref{fig:5-5} illustrates the visual meaning of this schema: the orange t
 
 \subsection{Edited Render Output}\label{subsec:problem2-edited-render-output}
 
-The expected result is a localized image edit that preserves the design context. A recolor operation should change the selected object without recoloring the whole room. A remove operation should remove the target object while repairing the surrounding wall or floor. A replacement operation should change the intended furniture item while keeping its approximate location and scale.
+The output of localized image editing is an edited image that is connected to the original approved render and the selected editing area. The expected result depends on the requested operation. A recolor operation should change only the selected object. A remove operation should remove the target element while repairing the surrounding visual region. A replacement operation should change the intended item while preserving its approximate location, scale, and relation to nearby furniture. An add operation should insert the requested element into the target region without changing unrelated parts of the room.
 
-The \texttt{checks} field stores evaluation or inspection results associated with the edited render. In the simplified example below, the values illustrate the intended state after the edit has been judged successful. In the benchmark, edit success and structure preservation are measured separately rather than assumed from the provider response.
+\hyperref[fig:5-6]{Figure~\ref*{fig:5-6}} shows the final edited render artifact from a real localized add operation. The edited image is stored together with its source render and target region so that the result can be inspected later. This link is important because evaluation must check both whether the requested edit was applied and whether the rest of the room was preserved.
 
-\begin{verbatim}
-{
-  "edited_render_id": "edit_2026_001",
-  "source_render_id": "render_2026_001",
-  "operation": "add",
-  "target_region_id": "manual_add_box_1",
-  "image_path": "renders/edit_2026_001.png",
-  "checks": {
-    "edit_applied": true,
-    "target_localized": true,
-    "structure_preserved": true
-  }
-}
-\end{verbatim}
-
-Figure~\ref{fig:5-6} shows the final edited render artifact for the same localized add operation.
-
-\begin{figure}[!htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter5/edit_output_example.png}
 \caption{Edited render output from a real localized add operation, showing the generated artifact that remains linked to the source render and target region.}
 \label{fig:5-6}
 \end{figure}
 
-The edit output in Figure~\ref{fig:5-6} remains linked to the source render and the underlying layout. This link is important for later evaluation because the edited image can be checked for edit success, target localization, structure preservation, and unintended changes outside the target scope.
-
-The generated or edited render is a visual artifact, not the structural source of truth. The editable layout remains the authoritative design state. If an image drifts in camera framing, room geometry, object identity, or opening position, the drift is treated as a rendering failure rather than a valid layout update. The current system can save and evaluate such renders, but it does not automatically synchronize image-only edits back into the editable 2D layout.
+The edited render remains a visual artifact, not the structural source of truth. The editable layout remains the main design state of RoomFlow. If an image-level edit changes the camera framing, room geometry, opening positions, or major furniture arrangement, the change is treated as unintended drift rather than a valid layout update. The current system can save and evaluate edited renders, but it does not automatically synchronize image-only edits back into the editable 2D layout.

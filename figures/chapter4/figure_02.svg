@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="880" viewBox="0 0 1400 880">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#111111"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 36px; font-weight: 700; fill: #111111; }
+      .subtitle { font-family: Arial, Helvetica, sans-serif; font-size: 21px; fill: #333333; }
+      .layer-title { font-family: Arial, Helvetica, sans-serif; font-size: 23px; font-weight: 700; fill: #111111; letter-spacing: 0.5px; }
+      .box-title { font-family: Arial, Helvetica, sans-serif; font-size: 19px; font-weight: 700; fill: #111111; }
+      .box-sub { font-family: Arial, Helvetica, sans-serif; font-size: 14px; fill: #333333; }
+      .layer { fill: #ffffff; stroke: #111111; stroke-width: 2.2; stroke-dasharray: 12 10; }
+      .node { fill: #f7f7f7; stroke: #111111; stroke-width: 2.2; }
+      .dep { fill: none; stroke: #111111; stroke-width: 2.2; stroke-dasharray: 9 7; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1400" height="880" fill="#ffffff"/>
+  <text x="700" y="54" text-anchor="middle" class="title">Backend Package Dependency Diagram</text>
+  <text x="700" y="84" text-anchor="middle" class="subtitle">Layered responsibilities and dependency direction in RoomFlow</text>
+
+  <rect class="layer" x="58" y="125" width="1284" height="128"/>
+  <text x="98" y="158" class="layer-title">API LAYER</text>
+
+  <rect class="layer" x="58" y="305" width="1284" height="128"/>
+  <text x="98" y="338" class="layer-title">APPLICATION SERVICES</text>
+
+  <rect class="layer" x="58" y="485" width="1284" height="128"/>
+  <text x="98" y="518" class="layer-title">DOMAIN MODULES</text>
+
+  <rect class="layer" x="58" y="665" width="1284" height="128"/>
+  <text x="98" y="698" class="layer-title">INFRASTRUCTURE AND TOOLS</text>
+
+  <!-- Column 1 -->
+  <rect class="node" x="95" y="180" width="190" height="54" rx="14"/>
+  <text x="190" y="213" text-anchor="middle" class="box-title">Auth routes</text>
+  <rect class="node" x="95" y="360" width="190" height="54" rx="14"/>
+  <text x="190" y="393" text-anchor="middle" class="box-title">Account service</text>
+  <rect class="node" x="95" y="540" width="190" height="54" rx="14"/>
+  <text x="190" y="573" text-anchor="middle" class="box-title">Session rules</text>
+  <rect class="node" x="95" y="720" width="190" height="54" rx="14"/>
+  <text x="190" y="753" text-anchor="middle" class="box-title">Database</text>
+
+  <!-- Column 2 -->
+  <rect class="node" x="352" y="180" width="190" height="54" rx="14"/>
+  <text x="447" y="213" text-anchor="middle" class="box-title">Inventory routes</text>
+  <rect class="node" x="352" y="360" width="190" height="54" rx="14"/>
+  <text x="447" y="393" text-anchor="middle" class="box-title">Inventory service</text>
+  <rect class="node" x="352" y="540" width="190" height="54" rx="14"/>
+  <text x="447" y="573" text-anchor="middle" class="box-title">Style material</text>
+  <rect class="node" x="352" y="720" width="190" height="54" rx="14"/>
+  <text x="447" y="753" text-anchor="middle" class="box-title">Database</text>
+
+  <!-- Column 3 -->
+  <rect class="node" x="609" y="180" width="190" height="54" rx="14"/>
+  <text x="704" y="213" text-anchor="middle" class="box-title">Pipeline routes</text>
+  <rect class="node" x="609" y="360" width="190" height="54" rx="14"/>
+  <text x="704" y="393" text-anchor="middle" class="box-title">Run case</text>
+  <rect class="node" x="609" y="540" width="190" height="54" rx="14"/>
+  <text x="704" y="564" text-anchor="middle" class="box-title">Object program</text>
+  <text x="704" y="584" text-anchor="middle" class="box-sub">planning and constraints</text>
+  <rect class="node" x="609" y="720" width="190" height="54" rx="14"/>
+  <text x="704" y="753" text-anchor="middle" class="box-title">Artifact store</text>
+
+  <!-- Column 4 -->
+  <rect class="node" x="866" y="180" width="190" height="54" rx="14"/>
+  <text x="961" y="213" text-anchor="middle" class="box-title">Render routes</text>
+  <rect class="node" x="866" y="360" width="190" height="54" rx="14"/>
+  <text x="961" y="393" text-anchor="middle" class="box-title">Snapshot render</text>
+  <rect class="node" x="866" y="540" width="190" height="54" rx="14"/>
+  <text x="961" y="573" text-anchor="middle" class="box-title">Image workflow</text>
+  <rect class="node" x="866" y="720" width="190" height="54" rx="14"/>
+  <text x="961" y="753" text-anchor="middle" class="box-title">AI provider client</text>
+
+  <!-- Column 5 -->
+  <rect class="node" x="1123" y="180" width="190" height="54" rx="14"/>
+  <text x="1218" y="213" text-anchor="middle" class="box-title">Saved routes</text>
+  <rect class="node" x="1123" y="360" width="190" height="54" rx="14"/>
+  <text x="1218" y="393" text-anchor="middle" class="box-title">Saved layouts</text>
+  <rect class="node" x="1123" y="540" width="190" height="54" rx="14"/>
+  <text x="1218" y="573" text-anchor="middle" class="box-title">Gallery variants</text>
+  <rect class="node" x="1123" y="720" width="190" height="54" rx="14"/>
+  <text x="1218" y="753" text-anchor="middle" class="box-title">Config and files</text>
+
+  <!-- Straight dependency arrows -->
+  <path class="dep" d="M 190 234 L 190 358"/>
+  <path class="dep" d="M 190 414 L 190 538"/>
+  <path class="dep" d="M 190 594 L 190 718"/>
+
+  <path class="dep" d="M 447 234 L 447 358"/>
+  <path class="dep" d="M 447 414 L 447 538"/>
+  <path class="dep" d="M 447 594 L 447 718"/>
+
+  <path class="dep" d="M 704 234 L 704 358"/>
+  <path class="dep" d="M 704 414 L 704 538"/>
+  <path class="dep" d="M 704 594 L 704 718"/>
+
+  <path class="dep" d="M 961 234 L 961 358"/>
+  <path class="dep" d="M 961 414 L 961 538"/>
+  <path class="dep" d="M 961 594 L 961 718"/>
+
+  <path class="dep" d="M 1218 234 L 1218 358"/>
+  <path class="dep" d="M 1218 414 L 1218 538"/>
+  <path class="dep" d="M 1218 594 L 1218 718"/>
+</svg>

@@ -1,0 +1,24 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.30, ranksep=0.42, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=18, penwidth=1.4, margin="0.18,0.11"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; candidates [label="Feasible candidates\nScores and diagnostics"]; accessories [label="Deferred accessories\nLow-risk requested objects"];}
+  }
+  subgraph cluster_module {
+    label="FINALIZATION AND SELECTION"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    refill [label="Accessory refill"];
+    binding [label="Style and inventory binding"];
+    dedupe [label="Duplicate filtering"];
+    ranking [label="Rank and select distinct variants"];
+    {rank=same; refill; binding;}
+    {rank=same; dedupe; ranking;}
+    refill -> binding -> dedupe -> ranking;
+  }
+  output [label="Editable layout gallery\nVariant identifiers, objects,\nscores, and diagnostics"];
+  candidates -> refill;
+  accessories -> refill;
+  ranking -> output;
+}

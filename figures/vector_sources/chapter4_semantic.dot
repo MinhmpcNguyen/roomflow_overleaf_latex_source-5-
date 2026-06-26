@@ -1,0 +1,24 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.30, ranksep=0.38, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=18, penwidth=1.4, margin="0.18,0.11"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; brief [label="User brief"]; room [label="Normalized room model"]; inventory [label="Inventory scope"];}
+  }
+  subgraph cluster_module {
+    label="SEMANTIC PLANNING"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    style [label="Style policy compiler\nStyle, density, palette, materials"];
+    relation [label="Relation planner\nFunctional clusters and object relations"];
+    contract [label="Request contract\nRequired, preferred, optional, forbidden"];
+    count [label="Count director\nQuantities, priorities, solver participation"];
+    artifact [label="Semantic plan artifact"];
+    style -> relation -> contract -> count -> artifact;
+  }
+  output [label="Structured requirements\nObjects, quantities, priorities,\nrelations, and style policy"];
+  brief -> style;
+  room -> style;
+  inventory -> style;
+  artifact -> output;
+}

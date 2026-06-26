@@ -1,0 +1,23 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.30, ranksep=0.38, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=18, penwidth=1.4, margin="0.18,0.11"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; boundary [label="Boundary polygon"]; openings [label="Doors and windows"]; metadata [label="Room type, height, and fixed notes"];}
+  }
+  subgraph cluster_module {
+    label="ROOM MODELING"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    normalize [label="Normalize geometry\nCoordinate system, scale, polygon order"];
+    attach [label="Attach openings\nAssociate each opening with a wall segment"];
+    derive [label="Derive geometric evidence\nClearance zones, wall zones, circulation targets"];
+    artifact [label="Room model artifact\nPolygon, openings, zones, and constraints"];
+    normalize -> attach -> derive -> artifact;
+  }
+  output [label="Compact room model\nShared by planning, solver,\n2D editor, and 3D preview"];
+  boundary -> normalize;
+  openings -> normalize;
+  metadata -> normalize;
+  artifact -> output;
+}

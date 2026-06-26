@@ -2,116 +2,64 @@
 \chapter{Requirement Survey and Analysis}
 \newcommand{\ucflow}[1]{\begin{minipage}[t]{\linewidth}\begin{enumerate}[leftmargin=1.2em,nosep]#1\end{enumerate}\end{minipage}}
 
-Chapter 1 defined two connected needs: editable furniture layout generation and layout-consistent visualization. This chapter turns those needs into system requirements. It first reviews existing AI-assisted interior design approaches, then identifies the practical gaps that the proposed system must address, and finally specifies the functional and non-functional requirements of RoomFlow.
+This chapter analyzes the requirements of RoomFlow as an AI-assisted interior design system. The overall goal is to transform a \textbf{user-provided design specification}, which includes a natural-language design brief and room geometry, into a \textbf{photorealistic interior design output}. To make this end-to-end problem controllable and editable, RoomFlow divides the process into two closely related sub-problems: \textbf{Automatic Interior Layout Design}, which generates a structured and editable furniture layout from the design specification, and \textbf{Layout-Guided Photorealistic Rendering}, which converts the selected 3D layout into a realistic image while preserving the spatial arrangement. Based on this perspective, the chapter reviews existing AI-based approaches for both sub-problems as well as for the overall end-to-end interior design task, and then derives the functional and non-functional requirements needed to develop RoomFlow.
 
 \section{Survey of Existing Approaches}\label{sec:status-survey}
 
-AI-assisted interior design has been explored through prompt-based image generation, LLM-based layout planning, hybrid layout-generation systems, and layout-conditioned image generation or editing. This section reviews these directions from the viewpoint of the proposed system requirements: natural-language input, spatially valid placement, editable layout state, layout-consistent rendering, and controlled image editing.
+To derive concrete requirements for RoomFlow, this section reviews existing AI-based approaches related to the target problem. The survey first considers the overall end-to-end task of generating a photorealistic interior design output from a user-provided design specification, since this is the final result that RoomFlow aims to support. It then examines the two technical directions used by RoomFlow to make the task controllable and editable: Automatic Interior Layout Design and Layout-Guided Photorealistic Rendering. The section concludes by identifying the remaining gaps in existing approaches and translating them into requirements for RoomFlow.
 
-\subsection{Prompt-Based Interior Image Generation}\label{subsec:prompt-based-interior-image-generation}
+\subsection{End-to-End AI-Assisted Interior Design}\label{subsec:integrated-layout-to-visualization-workflows}
 
-Prompt-based interior image generation turns a user's natural-language description of a room into a visual concept. This approach is useful for early inspiration because it requires little effort and can quickly show possible styles, materials, lighting conditions, and atmospheres.
+End-to-end AI-assisted interior design aims to connect user requirements, design reasoning, spatial planning, layout optimization, and visual output within one workflow. This direction is broader than automatic furniture placement alone, because the system must preserve the user's design intent across several stages of the design process. It is also broader than photorealistic rendering alone, because the visual output should be grounded in a structured design state instead of being generated as an isolated image.
 
-The main limitation is that the output is an image rather than an editable design state. A generated image may be visually attractive, but it does not provide stable object identities, dimensions, positions, orientations, or room-boundary constraints. As a result, the user cannot reliably move a sofa, preserve a door position, resize a wardrobe, or continue editing the scene as a real layout. The image model may also change the room shape, add or remove openings, hallucinate furniture, or ignore the requested arrangement. These issues make text-only image generation useful for inspiration but insufficient for layout design.
+Recent works have explored this connected direction. Co-Layout uses an LLM-based workflow to extract room and furniture constraints from textual requirements, solves the resulting layout problem with grid-based integer programming, and converts the result into a 3D visualization with asset retrieval and rendering \cite{xiang2025colayout}. HOLODECK uses an LLM to decompose a prompt into floor plans, materials, doors, windows, object selection, and spatial constraints before arranging 3D assets in an interactive environment \cite{al2024HolodeckLanguageGuided}. These systems show that LLMs are useful for translating high-level user intent into structured design decisions, while optimization or rule-based modules are still needed for spatial plausibility.
 
-Therefore, prompt-based image generation is useful for inspiration but insufficient as the main design state. Early-stage interior design requires a representation that preserves object identities, dimensions, positions, and orientations so that the user can continue refining the room as an editable layout.
+For RoomFlow, the end-to-end requirement is more specific to interactive room design. The system must start from a user-provided design specification, generate an editable layout, preserve fixed room elements such as doors and windows, support 3D preview, and produce a layout-consistent photorealistic design output. Therefore, RoomFlow treats the editable layout as the central design state that connects automatic layout design, photorealistic rendering, and later image editing.
 
-\subsection{LLM-Based Layout and Scene Planning}\label{subsec:llm-based-layout-and-scene-planning}
+\subsection{Automatic Interior Layout Design}\label{subsec:ai-based-interior-layout-generation}
 
-The second direction is LLM-based layout and scene planning. Systems such as LayoutGPT show that large language models can act as visual planners and generate structured scene descriptions from text \cite{al2023LayoutgptCompositionalVisual}. This direction is relevant because it allows users to express design requirements naturally, without manually writing object lists or spatial constraints.
+Automatic Interior Layout Design focuses on converting user-provided design specification into a structured furniture layout. The output is not a photorealistic image, but a representation of objects, sizes, positions, orientations, and spatial relations that can be checked, edited, and later visualized. This task is important because a useful interior design system must first decide what furniture should appear and where it should be placed before producing any realistic render.
 
-However, direct layout generation by language models remains limited. A language model can suggest plausible furniture items and relations, but it does not automatically guarantee geometric validity. In indoor layout design, this weakness may appear as furniture placed outside the room, objects overlapping each other, blocked doors or windows, or arrangements that only work for simple rectangular rooms. These errors are especially problematic for non-professional users because they may not notice the issue until a later stage.
+Recent studies approach this task in different ways. LayoutGPT shows that an LLM can act as a visual planner and generate 2D or 3D layouts from text conditions \cite{al2023LayoutgptCompositionalVisual}. I-Design uses multiple LLM agents to transform user preferences into a scene graph, then applies a placement algorithm to obtain object positions \cite{al2024IDesignPersonalized}. FlairGPT uses structured LLM queries to extract zones, objects, attributes, and placement constraints, then solves the layout with constrained optimization \cite{Littlefair2025FlairgptRepurposingLlms}. LLplace further explores LLM-based 3D layout generation and editing through dialogue, while InstructScene uses a semantic graph prior and layout decoder to improve controllability in instruction-driven indoor scene synthesis \cite{yang2024llplace,lin2024instructscene}.
 
-This direction suggests an important design principle for the thesis. Language models should be used for semantic planning, such as understanding user intent, identifying required objects, and proposing object relations. They should not be the only component responsible for final object coordinates.
+These works show that LLMs and graph-based representations are useful for interpreting design intent and producing structured layout plans. Their limitation is that semantic plausibility does not automatically guarantee geometric validity in a user-defined room. Layouts may still contain out-of-bound objects, overlaps, blocked openings, or weak circulation, especially when the room shape and fixed openings are important. RoomFlow therefore follows a hybrid direction: the language model is used for semantic planning, while room modeling, constraint checking, geometric solving, and final selection are handled by dedicated layout modules.
 
-\subsection{Hybrid AI Layout Generation}\label{subsec:hybrid-ai-layout-generation}
+\subsection{Layout-Guided Photorealistic Rendering}\label{subsec:interior-image-generation-and-editing-survey}
 
-The third direction is hybrid AI layout generation. Systems such as I-Design, HOLODECK, and FlairGPT suggest that language models become more reliable when they extract objects, relations, or constraints before a separate placement or optimization stage handles geometry \cite{al2024IDesignPersonalized}, \cite{al2024HolodeckLanguageGuided}, \cite{Littlefair2025FlairgptRepurposingLlms}. This direction is closer to the goal of the thesis because it separates semantic understanding from physical placement.
+Layout-Guided Photorealistic Rendering focuses on converting a given spatial layout into a realistic visual output while preserving the main room structure and furniture arrangement. This task is different from text-to-image generation, where the model may freely invent geometry from a prompt. In interior design, the visual result should remain consistent with the selected layout, including the room shell, openings, camera view, and major furniture positions.
 
-The strength of this direction is that each module solves a more suitable subproblem. The language model handles flexible user input, while the placement or solver module checks spatial feasibility. This structure can reduce hallucinated coordinates and make the final layout easier to inspect.
+Recent works address this problem by using layout or 3D structure as an explicit condition for appearance generation. Ctrl-Room separates text-to-3D room generation into a layout generation stage and an appearance generation stage, where the generated 3D layout is converted into a semantic layout map to guide panorama generation and panoramic NeRF reconstruction \cite{al2025CtrlRoomControllable}. SceneCraft converts 3D semantic layouts into multi-view 2D proxy maps and uses semantic- and depth-conditioned diffusion to generate multi-view images for learning a NeRF representation \cite{yang2024scenecraft}. SpatialGen further explores layout-guided 3D indoor scene generation by using a 3D layout and a reference image to synthesize realistic and semantically consistent indoor scenes from multiple viewpoints \cite{fang2025spatialgen}.
 
-The limitation is that many hybrid systems are designed mainly to demonstrate scene-generation algorithms or benchmark performance. They may generate a layout or a 3D scene, but they do not always provide the full application loop needed by non-professional users: drawing a room, editing a 2D layout, inspecting a 3D preview, generating a render from the selected layout, saving artifacts, and revising the result. The proposed system adopts the hybrid principle but implements it as an interactive workflow with editable layout state and user-facing correction.
-
-\subsection{Layout-Conditioned Image Generation and Editing}\label{subsec:layout-conditioned-image-generation-and-editing-survey}
-
-Layout-conditioned image generation and editing use the selected layout or another structural reference to guide the image model. Unlike text-only generation, this approach gives the model visual evidence about the room structure, furniture arrangement, openings, and camera view that should be preserved in the result.
-
-Ctrl-Room shows a related direction by separating layout and appearance generation for controllable room generation \cite{al2025CtrlRoomControllable}. Conditional image-generation methods also suggest that spatial evidence can improve output control. For the thesis, the relevant insight is that visualization should be treated as a stage derived from the layout, not as an independent text-to-image result.
-
-The limitation is that even layout-conditioned generation may still drift from the selected design. The image model can change object identity, alter object scale, move the camera, add new furniture, or modify windows and doors. This means that the system must not only send a visual condition to the image model, but also define preservation constraints and evaluate whether the output remains faithful to the layout.
+These works show that spatial conditioning is important for producing realistic interior images or scenes that remain faithful to a layout. However, many existing methods target full 3D scene or panorama generation and often require specialized training data, semantic layout maps, or reconstruction pipelines. RoomFlow follows a lighter application-oriented direction. It starts from the selected editable 3D layout, captures a camera-specific snapshot, combines it with visible-object metadata and preservation constraints, and uses this package to guide photorealistic rendering and later localized image editing. This keeps the rendered image connected to the editable layout instead of treating it as an independent generated image.
 
 \subsection{General Assessment and Requirement Identification}\label{subsec:general-assessment-and-requirement-identification}
 
-The surveyed approaches show that no single direction fully satisfies the needs of early-stage interior design for non-professional users. Prompt-based image generation provides fast visual inspiration but lacks editability. LLM-based planning provides natural-language interaction but cannot guarantee valid geometry by itself. Hybrid layout-generation systems improve spatial reasoning but are often not organized as an end-to-end user workflow. Layout-conditioned rendering improves visualization control but can still drift from the selected design. These observations lead to the practical requirements used to define the proposed system.
+The surveyed approaches show that AI-assisted interior design cannot be handled reliably as a single free-form generation step. End-to-end systems demonstrate the value of connecting design reasoning, spatial planning, and visual output, but they still need stronger support for user control, editability, and traceability in an interactive room-design application. Automatic layout-design methods can transform user intent into structured furniture plans, but their outputs still need explicit room geometry, opening constraints, collision checks, and circulation validation. Layout-guided rendering methods can produce realistic visual results from spatial evidence, but the generated image may still drift from the selected layout if preservation constraints are not enforced.
 
-\hyperref[tab:2-1]{Table~2.1} compares the four surveyed directions, while \hyperref[tab:2-2]{Table~2.2} derives the corresponding requirements for RoomFlow. Separating the comparison from the requirements makes clear that the proposed workflow is a response to the identified limitations rather than another surveyed approach.
-
-\begingroup
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
-\caption{Comparison of existing AI-assisted interior design directions.}\label{tab:2-1}\\
-\hline
-Approach & Strength & Limitation \\
-\hline
-Prompt-based interior image generation & Produces visual concepts quickly from natural-language descriptions & Returns pixels rather than an editable layout and may change room geometry or object arrangement \\
-\hline
-LLM-based layout planning & Understands natural-language requirements and can produce structured object or relation descriptions & Direct coordinate prediction may violate boundaries, openings, collision constraints, or circulation \\
-\hline
-Hybrid AI layout generation & Separates semantic understanding from placement or optimization & Often focuses on research output rather than a complete editable 2D/3D application workflow \\
-\hline
-Layout-conditioned image generation and editing & Uses visual or structural conditions to improve control over generated or edited images & May still drift from the selected layout or alter unrelated regions \\
-\hline
-\end{xltabular}
-\endgroup
-
-\begingroup
-\small
-\setlength{\tabcolsep}{4pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
-\caption{Derived requirements for RoomFlow.}\label{tab:2-2}\\
-\hline
-Requirement & Reason & System response \\
-\hline
-Explicit room geometry & Layout validity depends on room boundaries and fixed openings & Store the room polygon, doors, and windows in a shared geometric representation \\
-\hline
-Semantic planning with geometric validation & Language models can interpret intent but cannot guarantee usable coordinates & Use LLM stages for objects and relations, followed by deterministic constraint checks \\
-\hline
-Editable design state & A static image does not support later correction & Keep furniture identities, dimensions, positions, and orientations as structured layout data \\
-\hline
-Layout-derived visualization & Text-only rendering can detach appearance from the chosen layout & Generate a 3D preview and use its snapshot and metadata as rendering evidence \\
-\hline
-Controlled image editing & An edit can unintentionally change the camera, shell, or unrelated furniture & Define a target scope and preservation constraints, then evaluate edit success and structural preservation \\
-\hline
-\end{xltabular}
-\endgroup
-
-These needs define the functional scope of the system described in the following sections.
+These observations define the main requirements for RoomFlow. First, the system must store the room boundary, doors, and windows as explicit geometric data rather than relying on text alone. Second, semantic design reasoning and geometric placement must be separated: the language model should interpret the user's design intent, while dedicated geometric modules should solve and validate object placement. Third, the generated layout must remain editable, with furniture identities, dimensions, positions, and orientations preserved as structured data. Fourth, photorealistic rendering must be derived from the selected 3D layout through a snapshot, visible-object metadata, and preservation constraints, so that the image remains connected to the editable design state. Finally, localized image editing must keep a traceable link to the source render, target region, and original layout, reducing unintended changes to unrelated parts of the room.
 
 \section{Functional Overview}\label{sec:functional-overview}
 
-After identifying the main requirements in Section 2.1, this section presents the proposed system from the functional perspective. The purpose is to show how the application supports a complete early-stage interior design workflow, from account access and room creation to layout generation, layout editing, 3D preview, perspective rendering, and supporting data management. Detailed use case specifications are presented in Section 2.3.
+After deriving the main requirements in Section 2.1, this section presents RoomFlow from a functional perspective. The purpose is to describe the high-level functions that support the early-stage interior design workflow, before the detailed use case specifications are given in Section 2.3. The workflow starts from room creation and design input, continues with automatic layout generation and manual layout editing, and then proceeds to 3D preview, layout-guided photorealistic rendering, localized image editing, and result management.
 
-The system functions are organized around the two needs defined in Chapter 1. For editable layout generation, the application allows users to create a room, define fixed openings, arrange furniture manually, and request automatic layout variants from the AI-assisted pipeline. The generated layout is kept as structured and editable design data, so users can revise the result instead of treating it as a fixed output. For layout-consistent visualization, the application converts the selected layout into a 3D preview, uses the preview and layout metadata to generate a perspective image, and supports localized image editing when the user wants to modify a specific visual element.
+The core user workflow is organized around the two technical sub-problems of RoomFlow. For \textbf{Automatic Interior Layout Design}, the system allows the user to define a room, specify fixed openings, provide a design brief, generate layout variants, and revise the selected layout in an editable workspace. For \textbf{Layout-Guided Photorealistic Rendering}, the system converts the selected layout into a 3D preview, captures the chosen camera view, generates a realistic perspective render, and supports localized editing of the generated render while preserving unrelated room structure.
 
-The use case model includes three human actors. A Guest can register or log in. A User is an authenticated actor who performs the main design workflow, including room creation, manual editing, automatic layout generation, 3D preview, render generation, image editing, and artifact management. An Admin maintains shared system data such as user accounts and furniture records. External AI services are not modeled as human actors because they do not initiate user goals. They are supporting components invoked by the backend and are described later in the sequence and architecture diagrams.
+The use case model contains three human actors. A \textbf{Guest} can access the system and authenticate into an account. A \textbf{User} performs the main design workflow, including room creation, layout editing, automatic layout generation, 3D preview, render generation, image editing, and artifact management. An \textbf{Admin} maintains shared system data such as user accounts and furniture records. External AI services are treated as backend-supported components rather than human actors because they do not initiate user goals in the application.
 
-\subsection{General Use Case Diagram}\label{subsec:general-use-case-diagram}
+\subsection{Main Use Case Model}\label{subsec:main-use-case-model}
 
-\hyperref[fig:2-1]{Figure~2.1} presents the general use case diagram of the RoomFlow application. The diagram shows the main system boundary and the main functions available to each actor.
+\hyperref[fig:2-1]{Figure~2.1} presents the main use case model of the RoomFlow application. The diagram shows the system boundary, the three human actors, and the principal functions available to each actor.
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_01.png}
-\caption{General use case diagram of the RoomFlow application.}
+\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_01.pdf}
+\caption{Main use case model of the RoomFlow application.}
 \label{fig:2-1}
 \end{figure}
 
 The Guest actor can register and log in. After authentication, the User can create a room, manually design a room layout, automatically generate a room layout, generate a 3D preview, generate a perspective image, edit a perspective image, and save or load layout and render artifacts. The Admin actor can add users, deactivate users, and add furniture records to the inventory.
 
-The general diagram emphasizes that RoomFlow is not only an image-generation tool. It starts from room geometry, creates editable layout data, and uses that layout as the source for 3D preview and perspective rendering. In particular, generating a perspective image requires a selected layout and a snapshot from the 3D preview; these functions are shown separately only to keep the high-level actor diagram readable.
+The model emphasizes that RoomFlow is not only an image-generation tool. It starts from room geometry, creates editable layout data, and uses that layout as the source for 3D preview and perspective rendering. The detailed specifications later in this chapter are limited to the three use cases most directly related to the thesis contributions.
 
 \subsection{Detailed Use Case Diagrams for Core Workflows}\label{subsec:decomposed-use-case-diagram}
 
@@ -121,19 +69,26 @@ Figure~\ref{fig:2-2} decomposes the Auto Design Room Layout workflow into the us
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_02_auto_design_room_layout.png}
+\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_02_auto_design_room_layout.pdf}
 \caption{Detailed use case diagram for Auto Design Room Layout.}
 \label{fig:2-2}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_03_generate_perspective_image.png}
+\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_03_generate_perspective_image.pdf}
 \caption{Detailed use case diagram for Generate Perspective Image.}
 \label{fig:2-3}
 \end{figure}
 
 \subsection{Business Process for Layout Design and Visualization}\label{subsec:business-process-layout-design-visualization}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{figures/chapter2/figure_07.pdf}
+\caption{Business process for AI-assisted interior design in RoomFlow.}
+\label{fig:2-4}
+\end{figure}
 
 Figure~\ref{fig:2-4} presents the main workflow of the system. After logging in, the user starts a design session by creating a new room or loading a saved room. A room contains the basic information required for later processing, including the room type, boundary, doors, windows, and design brief.
 
@@ -145,127 +100,22 @@ The revision loop in Figure~\ref{fig:2-4} highlights that rendering is not a sep
 
 Admin management is outside the main design flow. It maintains user accounts and furniture records so that the design workflow can operate with valid users and consistent inventory data.
 
-\begin{figure}[!htbp]
-\centering
-\includegraphics[width=0.94\textwidth]{figures/chapter2/figure_07.png}
-\caption{Business process for AI-assisted interior design in RoomFlow.}
-\label{fig:2-4}
-\end{figure}
-
 \section{Functional Description}\label{sec:functional-description}
 
-This section specifies the main use cases of the system from the user and administrator perspectives. Each specification includes the use case name, description, actor, precondition, main event flow, alternative flow, and postcondition. The use cases describe what the system must provide, while the internal planning, solving, rendering, and persistence mechanisms are explained later in Chapters 4, 5, and 6.
+This section specifies the three use cases most closely connected to the thesis contributions. Authentication, room creation, manual editing, saved-artifact management, and administrator functions remain visible in Figure~\ref{fig:2-1}, but they are conventional supporting functions and are not expanded into separate specifications. Tables~\ref{tab:2-3}, \ref{tab:2-4}, and \ref{tab:2-5} focus on automatic layout design, perspective-image generation, and localized image editing.
 
-Tables~\ref{tab:2-3}, \ref{tab:2-4}, \ref{tab:2-5}, \ref{tab:2-6}, \ref{tab:2-7}, \ref{tab:2-8}, and \ref{tab:2-9} specify the user-facing workflow, from authentication and room creation to layout design, rendering, editing, and artifact management. Tables~\ref{tab:2-10} and \ref{tab:2-11} specify the administrator functions that maintain users and furniture data.
-
-\subsection{Use Case UC01: Log In / Register}\label{subsec:uc01-login-register}
+\subsection{Use Case UC01: Auto Design Room Layout}\label{subsec:uc01-auto-design-room-layout}
 
 \begingroup
 \small
 \setlength{\tabcolsep}{5pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Log in / Register.}\label{tab:2-3}\\
+\caption{Use case specification for Auto design room layout.}\label{tab:2-3}\\
 \hline
 Item & Description \\
 \hline
 Use case ID & UC01 \\
-\hline
-Use case name & Log in / Register \\
-\hline
-Description & A guest creates an account or logs in to access the protected design workspace. \\
-\hline
-Actor & Guest \\
-\hline
-Precondition & The guest opens the application and has network access. \\
-\hline
-Main flow & \ucflow{\item The guest opens the authentication screen. \item The guest enters registration information or login credentials. \item The system validates the submitted information. \item The system creates or restores an authenticated session. \item The user is redirected to the design workspace.} \\
-\hline
-Alternative flow & If the submitted information is invalid, the system shows a clear error message and allows the guest to try again. \\
-\hline
-Postcondition & A valid user session is created, or the authentication request is rejected safely. \\
-\hline
-\end{xltabular}
-\endgroup
-
-Authentication is necessary because the system stores saved layouts and generated renders under user accounts. It also separates normal user functions from administrator functions.
-
-\subsection{Use Case UC02: Create Room}\label{subsec:uc02-create-room}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Create room.}\label{tab:2-4}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC02 \\
-\hline
-Use case name & Create room \\
-\hline
-Description & The user defines the room to be used for manual or automatic layout design. \\
-\hline
-Actor & User \\
-\hline
-Precondition & The user is authenticated and has opened the design workspace. \\
-\hline
-Main flow & \ucflow{\item The user starts a new room design. \item The user selects the room type, such as living room or bedroom. \item The user defines room dimensions or edits the room boundary. \item The user places doors and windows on the room boundary. \item The user enters a brief design description. \item The system stores the room as structured geometry.} \\
-\hline
-Alternative flow & If the room geometry is invalid, the system asks the user to correct the boundary or opening placement before continuing. \\
-\hline
-Postcondition & A structured room case is created and can be used for manual editing, automatic layout generation, 3D preview, and rendering. \\
-\hline
-\end{xltabular}
-\endgroup
-
-This use case creates the spatial foundation of the system. Without room geometry and fixed openings, the layout solver cannot check containment, opening clearance, or circulation.
-
-\subsection{Use Case UC03: Manually Design Room Layout}\label{subsec:uc03-manually-design-room-layout}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Manually design room layout.}\label{tab:2-5}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC03 \\
-\hline
-Use case name & Manually design room layout \\
-\hline
-Description & The user places and adjusts furniture directly in the 2D design workspace. \\
-\hline
-Actor & User \\
-\hline
-Precondition & A valid room has been created or loaded. \\
-\hline
-Main flow & \ucflow{\item The user opens the furniture library. \item The user selects a furniture item. \item The user places the item in the room. \item The user moves, rotates, replaces, or removes furniture as needed. \item The system updates the editable layout state. \item The system displays the updated layout in the 2D workspace.} \\
-\hline
-Alternative flow & If an object overlaps another blocking object, lies outside the room boundary, blocks a door or window, violates clearance, or receives a low accessibility check, the system warns the user and allows manual correction. \\
-\hline
-Postcondition & The user obtains an editable layout state controlled by direct manipulation. \\
-\hline
-\end{xltabular}
-\endgroup
-
-Manual design is included because the system is not intended to replace user control. It allows users to refine automatic results or create a layout without using the auto-design pipeline.
-
-\subsection{Use Case UC04: Auto Design Room Layout}\label{subsec:uc04-auto-design-room-layout}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Auto design room layout.}\label{tab:2-6}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC04 \\
 \hline
 Use case name & Auto design room layout \\
 \hline
@@ -284,20 +134,20 @@ Postcondition & One or more editable layout variants are available for manual re
 \end{xltabular}
 \endgroup
 
-This use case is the core of Problem 1. It connects natural-language design requirements with explicit geometric validation so that the output is not only plausible but also usable as an editable room layout.
+This use case connects natural-language design requirements with explicit geometric validation so that the output is not only plausible but also usable as an editable room layout.
 
-\subsection{Use Case UC05: Generate 3D Preview and Perspective Image}\label{subsec:uc05-generate-perspective-image}
+\subsection{Use Case UC02: Generate Perspective Image}\label{subsec:uc02-generate-perspective-image}
 
 \begingroup
 \small
 \setlength{\tabcolsep}{5pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for generating a 3D preview and perspective image.}\label{tab:2-7}\\
+\caption{Use case specification for generating a perspective image.}\label{tab:2-4}\\
 \hline
 Item & Description \\
 \hline
-Use case ID & UC05 \\
+Use case ID & UC02 \\
 \hline
 Use case name & Generate 3D preview and perspective image \\
 \hline
@@ -316,20 +166,20 @@ Postcondition & A perspective render image is generated and remains traceable to
 \end{xltabular}
 \endgroup
 
-This use case addresses the visualization problem from Chapter 1. Generate 3D Preview is treated as a required sub-step of this use case because the render is derived from the selected camera view and snapshot. The generated render is a visual layer derived from the editable layout, not the primary design state.
+The 3D preview is a required step because the perspective image is derived from its selected camera view and snapshot. The generated render remains a visual layer linked to the editable layout rather than becoming the primary design state.
 
-\subsection{Use Case UC06: Edit Perspective Image}\label{subsec:uc06-edit-perspective-image}
+\subsection{Use Case UC03: Edit Perspective Image}\label{subsec:uc03-edit-perspective-image}
 
 \begingroup
 \small
 \setlength{\tabcolsep}{5pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Edit perspective image.}\label{tab:2-8}\\
+\caption{Use case specification for Edit perspective image.}\label{tab:2-5}\\
 \hline
 Item & Description \\
 \hline
-Use case ID & UC06 \\
+Use case ID & UC03 \\
 \hline
 Use case name & Edit perspective image \\
 \hline
@@ -348,114 +198,20 @@ Postcondition & An edited render is produced while preserving unrelated room str
 \end{xltabular}
 \endgroup
 
-This use case keeps visualization interactive. The user does not need to restart the whole workflow when only a local visual change is needed.
-
-\subsection{Use Case UC07: Manage Saved Layouts and Render Artifacts}\label{subsec:uc07-manage-saved-artifacts}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Manage saved layouts and render artifacts.}\label{tab:2-9}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC07 \\
-\hline
-Use case name & Manage saved layouts and render artifacts \\
-\hline
-Description & The user saves, loads, views, or reuses layout variants, generated renders, and edited renders. \\
-\hline
-Actor & User \\
-\hline
-Precondition & The user is authenticated and at least one layout or render artifact exists. \\
-\hline
-Main flow & \ucflow{\item The user opens the saved-design or render-history view. \item The system lists artifacts owned by the user. \item The user saves the current layout, loads a previous layout, views render history, or reuses a render as an edit source. \item The system restores or stores the selected artifact with source metadata.} \\
-\hline
-Alternative flow & If an artifact is missing, inaccessible, or incompatible with the current schema, the system shows an error and keeps the current workspace state unchanged. \\
-\hline
-Postcondition & The selected layout or render artifact is saved, loaded, or reused while preserving traceability to the source room and layout. \\
-\hline
-\end{xltabular}
-\endgroup
-
-Saved artifacts make the workflow iterative. A user can compare generated variants, revisit an earlier layout, and reuse a render as the source for localized editing.
-
-\subsection{Use Case UC08: Manage Users}\label{subsec:uc08-manage-users}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Manage users.}\label{tab:2-10}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC08 \\
-\hline
-Use case name & Manage users \\
-\hline
-Description & The administrator adds users or deactivates user accounts. \\
-\hline
-Actor & Admin \\
-\hline
-Precondition & The administrator is authenticated with admin permission. \\
-\hline
-Main flow & \ucflow{\item The administrator opens the user management interface. \item The administrator creates a user or selects an existing user. \item The system validates role and account status. \item The system creates, updates, or deactivates the account.} \\
-\hline
-Alternative flow & If the email, role, or account state is invalid, the system rejects the change and reports the required correction. \\
-\hline
-Postcondition & User access is updated consistently without exposing password or token data. \\
-\hline
-\end{xltabular}
-\endgroup
-
-\subsection{Use Case UC09: Manage Furniture Inventory}\label{subsec:uc09-manage-furniture-inventory}
-
-\begingroup
-\small
-\setlength{\tabcolsep}{5pt}
-\renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Use case specification for Manage furniture inventory.}\label{tab:2-11}\\
-\hline
-Item & Description \\
-\hline
-Use case ID & UC09 \\
-\hline
-Use case name & Manage furniture inventory \\
-\hline
-Description & The administrator adds or updates furniture records used by manual editing, auto layout generation, and 3D preview. \\
-\hline
-Actor & Admin \\
-\hline
-Precondition & The administrator is authenticated with admin permission. \\
-\hline
-Main flow & \ucflow{\item The administrator opens the inventory management interface. \item The administrator adds or updates a furniture item. \item The administrator enters category, dimensions, style/material metadata, and optional asset information. \item The system validates required dimensions and metadata. \item The system updates the inventory database.} \\
-\hline
-Alternative flow & If the submitted data is invalid or incomplete, the system rejects the request and shows the required correction. \\
-\hline
-Postcondition & The furniture inventory is updated consistently and can be used by the layout and preview workflows. \\
-\hline
-\end{xltabular}
-\endgroup
-
-Furniture inventory management is separated from user management because it affects geometric validity. The layout-generation pipeline depends on concrete item dimensions and metadata. The system cannot produce reliable layouts if the inventory contains missing or inconsistent object information.
+This use case keeps visualization interactive. The user does not need to restart the complete workflow when only a local visual change is needed.
 
 \section{Non-Functional Requirements}\label{sec:non-functional-requirements}
 
 Besides functional requirements, the system must satisfy several non-functional requirements. These requirements are important because the application combines interactive editing, AI generation, geometric validation, image rendering, and persistent user data.
 
-Table~\ref{tab:2-12} summarizes the non-functional requirements used to guide the system design and later implementation choices.
+Table~\ref{tab:2-6} summarizes the non-functional requirements used to guide the system design and later implementation choices.
 
 \begingroup
 \small
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{1.6cm}|>{\raggedright\arraybackslash}p{3.1cm}|>{\raggedright\arraybackslash}X|}
-\caption{Non-functional requirements.}\label{tab:2-12}\\
+\caption{Non-functional requirements.}\label{tab:2-6}\\
 \hline
 ID & Requirement & Description \\
 \hline

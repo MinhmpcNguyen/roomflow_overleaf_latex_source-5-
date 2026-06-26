@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820">
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .title { font-size: 32px; font-weight: 700; text-anchor: middle; }
+    .label { font-size: 28px; text-anchor: middle; dominant-baseline: middle; }
+    .actor { font-size: 28px; font-weight: 700; text-anchor: middle; }
+    .line { stroke: #111; stroke-width: 2.5; fill: none; }
+    .boundary { stroke: #111; stroke-width: 3; fill: #fff; }
+    .uc { stroke: #111; stroke-width: 2.5; fill: #fff; }
+  </style>
+  <rect class="boundary" x="270" y="40" width="830" height="730"/>
+  <text class="title" x="685" y="90">Auto Design Room Layout</text>
+
+  <g class="line">
+    <circle cx="115" cy="330" r="24"/>
+    <line x1="115" y1="354" x2="115" y2="425"/>
+    <line x1="70" y1="380" x2="160" y2="380"/>
+    <line x1="115" y1="425" x2="75" y2="485"/>
+    <line x1="115" y1="425" x2="155" y2="485"/>
+  </g>
+  <text class="actor" x="115" y="530">User</text>
+
+  <ellipse class="uc" cx="665" cy="180" rx="210" ry="43"/>
+  <text class="label" x="665" y="180">Create or load room</text>
+  <ellipse class="uc" cx="665" cy="300" rx="235" ry="43"/>
+  <text class="label" x="665" y="300">Define boundary and openings</text>
+  <ellipse class="uc" cx="665" cy="420" rx="195" ry="43"/>
+  <text class="label" x="665" y="420">Enter design brief</text>
+  <ellipse class="uc" cx="665" cy="540" rx="250" ry="43"/>
+  <text class="label" x="665" y="540">Run automatic layout generation</text>
+  <ellipse class="uc" cx="665" cy="660" rx="220" ry="43"/>
+  <text class="label" x="665" y="660">Review and select layout variants</text>
+
+  <line class="line" x1="160" y1="380" x2="455" y2="180"/>
+  <line class="line" x1="160" y1="380" x2="430" y2="300"/>
+  <line class="line" x1="160" y1="380" x2="470" y2="420"/>
+  <line class="line" x1="160" y1="380" x2="415" y2="540"/>
+  <line class="line" x1="160" y1="380" x2="445" y2="660"/>
+</svg>

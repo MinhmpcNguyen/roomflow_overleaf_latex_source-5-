@@ -1,7 +1,7 @@
 % Restructured book: system construction from the non-evaluation parts of old Chapter 4.
 \chapter{System Construction}
 
-This chapter presents the implemented system that supports the two solution chapters. It describes the software architecture, package organization, detailed design, application-building results, and deployment configuration. Chapters 4 and 5 focus on the layout and image workflows, while this chapter explains how those workflows are implemented as a web application with a frontend, backend, database, external AI services, and persistent artifacts.
+This chapter presents the construction of RoomFlow as a complete web-based interior design system. This chapter explains how these components are integrated into an interactive application. The focus is on the system architecture, frontend workspace, backend processing pipeline, database design, implemented functions, and deployment environment. The chapter first introduces the overall architecture and package organization, then describes the detailed design of the user interface, backend services, rendering flow, and data model. It also presents the main implemented functions of RoomFlow, including room editing, automatic layout generation, 3D preview, photorealistic rendering, image editing, and result management.
 
 \section{Architecture Design}\label{sec:architecture-design}
 
@@ -40,7 +40,7 @@ Figure~\ref{fig:6-2} shows the package dependency direction used to preserve thi
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/chapter4/figure_02.png}
+\includegraphics[width=\textwidth]{figures/chapter4/figure_02.pdf}
 \caption{Backend package dependency diagram.}
 \label{fig:6-2}
 \end{figure}
@@ -65,7 +65,7 @@ Figure~\ref{fig:6-3} traces this backend flow from the frontend request through 
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/chapter4/figure_03.png}
+\includegraphics[width=\textwidth]{figures/chapter4/figure_03.pdf}
 \caption{Sequence diagram of the auto-fill furniture layout flow.}
 \label{fig:6-3}
 \end{figure}
@@ -78,13 +78,13 @@ The implemented flow is asynchronous from the user's perspective. The backend wr
 
 The image rendering module uses the selected 3D layout as the source of truth. The frontend captures a snapshot payload containing the source 3D snapshot, visible objects, screen-space bounding boxes, room shell facts, opening facts, camera metadata, and optional references. The backend snapshot prompt compiler converts this payload into a structured prompt with object facts, spatial relations, occlusion information, and strict layout constraints.
 
-The renderer supports three user-facing modes: generating a new render from a selected 3D snapshot, editing an existing render with a localized request, and re-rendering from a different camera view. The evaluation code can additionally run ablation variants of the generation workflow, such as text-only prompting, text contracts, visual preflight, and locked-geometry references. These variants are used for Chapter 7 experiments, while the user-facing workflow exposes only the selected generation and editing controls.
+The renderer supports three user-facing modes: generating a new render from a selected 3D snapshot, editing an existing render with a localized request, and re-rendering from a different camera view. The evaluation code can additionally run ablation variants of the generation workflow, such as text-only prompting, text contracts, visual preflight, and locked-geometry references. These variants are used for Chapter 8 experiments, while the user-facing workflow exposes only the selected generation and editing controls.
 
 Figure~\ref{fig:6-4} shows the sequence used when a selected 3D snapshot is converted into a provider request and saved render artifact.
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/chapter4/figure_04.png}
+\includegraphics[width=\textwidth]{figures/chapter4/figure_04.pdf}
 \caption{Sequence diagram of image generation from a 3D snapshot.}
 \label{fig:6-4}
 \end{figure}
@@ -103,7 +103,7 @@ Figure~\ref{fig:6-5} presents the simplified database E-R diagram for these runt
 
 \begin{figure}[!htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/chapter4/figure_05.png}
+\includegraphics[width=\textwidth]{figures/chapter4/figure_05.pdf}
 \caption{Simplified database E-R diagram showing the implemented entities and their main relationships. Detailed fields are listed in \hyperref[tab:6-1]{Table~6.1}.}
 \label{fig:6-5}
 \end{figure}
@@ -180,9 +180,9 @@ The implemented application covers three parts of the thesis workflow. First, th
 
 Second, the backend pipeline records semantic intent, object quantities, solver outputs, style decisions, and final variants as separate artifacts instead of directly trusting LLM-generated coordinates. This makes each run inspectable for debugging and reproducible for benchmark evaluation.
 
-Third, the experiment runners reuse these artifacts to evaluate layout generation, image generation, and image editing in Chapter 7. They remain separate from the interactive API path, while sharing the same core schemas and processing modules.
+Third, the experiment runners reuse these artifacts to evaluate layout generation in Chapter 7 and image generation and editing in Chapter 8. They remain separate from the interactive API path, while sharing the same core schemas and processing modules.
 
-\hyperref[tab:6-3]{Table~6.3} summarizes the implementation scope and the main delivered artifacts. It intentionally describes functional implementation areas instead of exact source-size counts, because algorithmic quality is evaluated separately in Chapter 7.
+\hyperref[tab:6-3]{Table~6.3} summarizes the implementation scope and the main delivered artifacts. It intentionally describes functional implementation areas instead of exact source-size counts, because algorithmic quality is evaluated separately in Chapters 7 and 8.
 
 
 \begingroup
@@ -198,7 +198,7 @@ Backend source & Backend API, application services, planning modules, solver int
 \hline
 Frontend source & React workspace, 2D canvas editor, 3D preview, account UI, layout variant panel, and render controls & Provides the interactive user workspace for room editing, variant review, preview, rendering, and saved artifacts. \\
 \hline
-Evaluation scripts & Layout benchmark, ablation runners, stability evaluation, image-flow evaluation, chart generation, and document figures & Supports the quantitative and qualitative evaluation reported in Chapter 7. \\
+Evaluation scripts & Layout benchmark, ablation runners, stability evaluation, image-flow evaluation, chart generation, and document figures & Supports the quantitative and qualitative evaluation reported in Chapters 7 and 8. \\
 \hline
 Main API groups & auth, account, inventory, pipeline & Four route groups cover login, persistence, inventory, and AI workflows. \\
 \hline
@@ -240,6 +240,8 @@ The following figures illustrate the main implemented functions from the user pe
 \caption{3D preview and image-rendering controls.}
 \label{fig:6-9}
 \end{figure}
+
+Figure~\ref{fig:6-10} shows the generated perspective render beside its 3D layout source, making the connection between the editable scene and the visualization output visible in the implemented interface.
 
 \begin{center}
 \includegraphics[width=0.84\textwidth]{figures/chapter4/figure_08.png}

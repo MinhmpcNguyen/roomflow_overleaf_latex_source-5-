@@ -1,0 +1,20 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.32, ranksep=0.42, splines=ortho];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=17, penwidth=1.5, margin="0.18,0.12"];
+  edge [color="#111111", penwidth=1.5, arrowsize=0.8];
+
+  layout [label="Selected editable layout"];
+  snapshot [label="3D preview snapshot\nCamera, room shell, openings, and visible objects"];
+  package [label="Conditioning package\nScene contract, object contract,\nvisual preset, and preservation rules"];
+  generate [label="Photorealistic image generation"];
+  render [label="Generated perspective image"];
+  request [label="Localized edit request\nOperation, target object or region"];
+  edit [label="Controlled image editing"];
+  output [label="Saved generated or edited render\nLinked to source layout and metadata"];
+
+  layout -> snapshot -> package -> generate -> render;
+  render -> edit;
+  request -> edit;
+  edit -> output;
+  render -> output;
+}

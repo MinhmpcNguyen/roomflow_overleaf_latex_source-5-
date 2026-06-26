@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820">
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .title { font-size: 32px; font-weight: 700; text-anchor: middle; }
+    .label { font-size: 28px; text-anchor: middle; dominant-baseline: middle; }
+    .actor { font-size: 28px; font-weight: 700; text-anchor: middle; }
+    .line { stroke: #111; stroke-width: 2.5; fill: none; }
+    .boundary { stroke: #111; stroke-width: 3; fill: #fff; }
+    .uc { stroke: #111; stroke-width: 2.5; fill: #fff; }
+  </style>
+  <rect class="boundary" x="270" y="40" width="830" height="730"/>
+  <text class="title" x="685" y="90">Generate Perspective Image</text>
+
+  <g class="line">
+    <circle cx="115" cy="330" r="24"/>
+    <line x1="115" y1="354" x2="115" y2="425"/>
+    <line x1="70" y1="380" x2="160" y2="380"/>
+    <line x1="115" y1="425" x2="75" y2="485"/>
+    <line x1="115" y1="425" x2="155" y2="485"/>
+  </g>
+  <text class="actor" x="115" y="530">User</text>
+
+  <ellipse class="uc" cx="665" cy="180" rx="165" ry="43"/>
+  <text class="label" x="665" y="180">Select layout</text>
+  <ellipse class="uc" cx="665" cy="300" rx="180" ry="43"/>
+  <text class="label" x="665" y="300">Preview 3D scene</text>
+  <ellipse class="uc" cx="665" cy="420" rx="225" ry="43"/>
+  <text class="label" x="665" y="420">Choose camera and visual preset</text>
+  <ellipse class="uc" cx="665" cy="540" rx="240" ry="43"/>
+  <text class="label" x="665" y="540">Generate perspective image</text>
+  <ellipse class="uc" cx="665" cy="660" rx="210" ry="43"/>
+  <text class="label" x="665" y="660">Review and save render</text>
+
+  <line class="line" x1="160" y1="380" x2="500" y2="180"/>
+  <line class="line" x1="160" y1="380" x2="485" y2="300"/>
+  <line class="line" x1="160" y1="380" x2="440" y2="420"/>
+  <line class="line" x1="160" y1="380" x2="425" y2="540"/>
+  <line class="line" x1="160" y1="380" x2="455" y2="660"/>
+</svg>

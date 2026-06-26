@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="700" viewBox="0 0 1140 700">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8.5" refY="3.5" orient="auto">
+      <path d="M0,0 L0,7 L9,3.5 z" fill="#111"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .lane { fill: #fff; stroke: #111; stroke-width: 2; }
+    .lane-head { fill: #f1f1f1; stroke: #111; stroke-width: 2; }
+    .lane-title { font-size: 24px; font-weight: 700; dominant-baseline: middle; letter-spacing: 0; }
+    .node { fill: #fff; stroke: #111; stroke-width: 2; }
+    .node-title { font-size: 23px; font-weight: 700; dominant-baseline: middle; }
+    .node-detail { font-size: 17px; dominant-baseline: middle; }
+    .label { font-size: 21px; dominant-baseline: middle; }
+    .arrow { fill: none; stroke: #111; stroke-width: 2.2; marker-end: url(#arrowhead); }
+    .line { fill: none; stroke: #111; stroke-width: 2.2; }
+  </style>
+  <rect x="25" y="25" width="1090" height="120" rx="4" class="lane"/>
+<rect x="25" y="25" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="51" class="lane-title" text-anchor="start">EDIT INPUT</text>
+<rect x="65" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="215" y="102.5" class="node-title" text-anchor="middle">Approved source render</text>
+<rect x="420" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="570" y="102.5" class="node-title" text-anchor="middle">Edit instruction</text>
+<rect x="775" y="68" width="300" height="55" rx="12" class="node"/>
+<text x="925" y="102.5" class="node-title" text-anchor="middle">Target object or region</text>
+<rect x="25" y="175" width="1090" height="205" rx="4" class="lane"/>
+<rect x="25" y="175" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="201" class="lane-title" text-anchor="start">EDIT REQUEST PREPARATION</text>
+<rect x="85" y="245" width="270" height="65" rx="12" class="node"/>
+<text x="220" y="284.5" class="node-title" text-anchor="middle">Visual preflight</text>
+<rect x="435" y="245" width="270" height="65" rx="12" class="node"/>
+<text x="570" y="284.5" class="node-title" text-anchor="middle">Preservation contract</text>
+<rect x="785" y="245" width="270" height="65" rx="12" class="node"/>
+<text x="920" y="284.5" class="node-title" text-anchor="middle">Edit package</text>
+<line x1="355" y1="278" x2="435" y2="278" class="arrow"/>
+<line x1="705" y1="278" x2="785" y2="278" class="arrow"/>
+<rect x="25" y="410" width="1090" height="140" rx="4" class="lane"/>
+<rect x="25" y="410" width="1090" height="38" rx="4" class="lane-head"/>
+<text x="43" y="436" class="lane-title" text-anchor="start">PROVIDER EXECUTION</text>
+<rect x="135" y="457" width="310" height="60" rx="12" class="node"/>
+<text x="290" y="494" class="node-title" text-anchor="middle">Image-editing model</text>
+<rect x="485" y="457" width="310" height="60" rx="12" class="node"/>
+<text x="640" y="494" class="node-title" text-anchor="middle">Save audit metadata</text>
+<rect x="835" y="457" width="230" height="60" rx="12" class="node"/>
+<text x="950" y="494" class="node-title" text-anchor="middle">Edited image</text>
+<line x1="445" y1="487" x2="485" y2="487" class="arrow"/>
+<line x1="795" y1="487" x2="835" y2="487" class="arrow"/>
+<rect x="315" y="585" width="510" height="100" rx="4" class="lane"/>
+<rect x="315" y="585" width="510" height="38" rx="4" class="lane-head"/>
+<text x="333" y="611" class="lane-title" text-anchor="start">OUTPUT</text>
+<rect x="365" y="632" width="410" height="35" rx="12" class="node"/>
+<text x="570" y="656.5" class="node-title" text-anchor="middle">Localized edit linked to source render</text>
+<line x1="215" y1="145" x2="215" y2="245" class="arrow"/>
+<line x1="570" y1="145" x2="570" y2="210" class="arrow"/>
+<polyline points="570,210 220,210 220,245" class="arrow"/>
+<line x1="925" y1="145" x2="925" y2="245" class="arrow"/>
+<polyline points="950,517 950,565 570,565 570,585" class="arrow"/>
+</svg>

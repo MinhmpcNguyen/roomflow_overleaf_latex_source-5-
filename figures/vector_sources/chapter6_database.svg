@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1120" viewBox="0 0 1500 1120">
+  <style>
+    text { font-family: "Times New Roman", serif; fill: #111; }
+    .entity { stroke: #111; stroke-width: 2.2; fill: #fff; }
+    .divider { stroke: #111; stroke-width: 1.7; }
+    .name { font-size: 27px; font-weight: 700; text-anchor: middle; }
+    .field { font-size: 22px; }
+    .relation { stroke: #111; stroke-width: 2; fill: none; }
+    .card { font-size: 21px; font-weight: 700; }
+  </style>
+
+  <g>
+    <rect class="entity" x="60" y="80" width="360" height="220"/>
+    <text class="name" x="240" y="118">user_accounts</text><line class="divider" x1="60" y1="135" x2="420" y2="135"/>
+    <text class="field" x="82" y="170">PK id</text><text class="field" x="82" y="202">email, tenant_id</text>
+    <text class="field" x="82" y="234">password_hash</text><text class="field" x="82" y="266">created_at, updated_at</text>
+  </g>
+  <g>
+    <rect class="entity" x="60" y="400" width="360" height="190"/>
+    <text class="name" x="240" y="438">auth_sessions</text><line class="divider" x1="60" y1="455" x2="420" y2="455"/>
+    <text class="field" x="82" y="490">PK id</text><text class="field" x="82" y="522">FK user_id</text>
+    <text class="field" x="82" y="554">token_hash, expires_at</text>
+  </g>
+  <g>
+    <rect class="entity" x="555" y="80" width="390" height="220"/>
+    <text class="name" x="750" y="118">saved_layout_cases</text><line class="divider" x1="555" y1="135" x2="945" y2="135"/>
+    <text class="field" x="578" y="170">PK id</text><text class="field" x="578" y="202">FK user_id</text>
+    <text class="field" x="578" y="234">name, source_pipeline_case_id</text><text class="field" x="578" y="266">metadata JSONB</text>
+  </g>
+  <g>
+    <rect class="entity" x="555" y="400" width="390" height="240"/>
+    <text class="name" x="750" y="438">saved_layouts</text><line class="divider" x1="555" y1="455" x2="945" y2="455"/>
+    <text class="field" x="578" y="490">PK id</text><text class="field" x="578" y="522">FK user_id, case_id</text>
+    <text class="field" x="578" y="554">floorplan_json, design_json</text><text class="field" x="578" y="586">styled_json, option metadata</text>
+  </g>
+  <g>
+    <rect class="entity" x="555" y="765" width="390" height="250"/>
+    <text class="name" x="750" y="803">generated_renders</text><line class="divider" x1="555" y1="820" x2="945" y2="820"/>
+    <text class="field" x="578" y="855">PK id</text><text class="field" x="578" y="887">FK user_id, root_layout_id</text>
+    <text class="field" x="578" y="919">case_id, option_id, model</text><text class="field" x="578" y="951">prompt, image_path, metadata</text>
+  </g>
+  <g>
+    <rect class="entity" x="1080" y="150" width="360" height="220"/>
+    <text class="name" x="1260" y="188">assets</text><line class="divider" x1="1080" y1="205" x2="1440" y2="205"/>
+    <text class="field" x="1102" y="240">PK id</text><text class="field" x="1102" y="272">tenant_id, type, name</text>
+    <text class="field" x="1102" y="304">dimensions, style, material</text><text class="field" x="1102" y="336">attributes JSONB</text>
+  </g>
+  <g>
+    <rect class="entity" x="1080" y="500" width="360" height="200"/>
+    <text class="name" x="1260" y="538">asset_files</text><line class="divider" x1="1080" y1="555" x2="1440" y2="555"/>
+    <text class="field" x="1102" y="590">PK id</text><text class="field" x="1102" y="622">FK asset_id</text>
+    <text class="field" x="1102" y="654">kind, storage_key, mime</text>
+  </g>
+
+  <line class="relation" x1="240" y1="300" x2="240" y2="400"/>
+  <text class="card" x="252" y="330">1</text><text class="card" x="252" y="390">0..*</text>
+  <path class="relation" d="M420,190 H555"/>
+  <text class="card" x="435" y="178">1</text><text class="card" x="515" y="178">0..*</text>
+  <line class="relation" x1="750" y1="300" x2="750" y2="400"/>
+  <text class="card" x="762" y="330">1</text><text class="card" x="762" y="390">0..*</text>
+  <line class="relation" x1="750" y1="640" x2="750" y2="765"/>
+  <text class="card" x="762" y="675">1</text><text class="card" x="762" y="752">0..*</text>
+  <path class="relation" d="M420,250 H490 V890 H555"/>
+  <text class="card" x="435" y="238">1</text><text class="card" x="515" y="878">0..*</text>
+  <line class="relation" x1="1260" y1="370" x2="1260" y2="500"/>
+  <text class="card" x="1272" y="405">1</text><text class="card" x="1272" y="488">0..*</text>
+</svg>

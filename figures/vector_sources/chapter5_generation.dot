@@ -1,0 +1,26 @@
+digraph G {
+  graph [rankdir=TB, bgcolor="white", pad=0.12, nodesep=0.28, ranksep=0.40, splines=ortho, compound=true];
+  node [shape=box, style="rounded", color="#111111", fontcolor="#111111", fontname="Times New Roman", fontsize=17, penwidth=1.4, margin="0.17,0.10"];
+  edge [color="#111111", penwidth=1.4, arrowsize=0.75];
+
+  subgraph cluster_input {
+    label="LAYOUT-DERIVED INPUT"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    {rank=same; snapshot [label="3D snapshot\nCamera and room shell"]; objects [label="Visible-object map\nIdentifiers and screen-space boxes"]; preset [label="Visual preset\nStyle, lighting, and scenery"];}
+  }
+  subgraph cluster_compile {
+    label="CONDITIONING COMPILER"; color="#111111"; fontname="Times New Roman"; fontsize=17;
+    guide [label="Build edge/silhouette guide"];
+    scene [label="Compile scene contract"];
+    contract [label="Compile visible-object contract"];
+    prompt [label="Assemble provider prompt package"];
+    guide -> scene -> contract -> prompt;
+  }
+  provider [label="Provider image model\nText-and-image-conditioned generation"];
+  validate [label="Store output and metadata\nSource layout, runtime, tokens, presets"];
+  output [label="Photorealistic perspective image"];
+
+  snapshot -> guide;
+  objects -> guide;
+  preset -> guide;
+  prompt -> provider -> validate -> output;
+}
