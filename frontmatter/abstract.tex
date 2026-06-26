@@ -1,0 +1,13 @@
+\chapter*{ABSTRACT}
+\addcontentsline{toc}{chapter}{ABSTRACT}
+Interior layout design is difficult for non-professional users because a useful design must connect a user's natural-language intent with physical room constraints. A user may describe the desired room in ordinary language, but the system must still identify the necessary furniture, place it inside the room boundary, keep doors and windows usable, preserve circulation, and provide visual feedback that remains consistent with the editable layout. Existing generative image tools can produce attractive interiors, but they often lack controllable geometry and do not directly support later manual editing.
+
+The proposed system is named RoomFlow, an AI-assisted room design system for editable layout generation and layout-consistent visualization in living rooms and bedrooms. RoomFlow combines large-language-model planning with deterministic geometric validation. The language model interprets the user brief, extracts required objects and relations, and supports style reasoning. The placement pipeline then represents the room and furniture as structured geometric data, generates layout variants, validates feasibility constraints, and keeps the result editable in a 2D/3D workspace. For visualization, the system uses the selected 3D preview as a layout reference. The browser captures a snapshot of the room shell, camera view, openings, and visible furniture. This snapshot, together with structured preservation constraints, guides the image model to create a realistic render while keeping the main spatial structure and unedited objects consistent with the editable layout.
+
+The thesis makes three main contributions. First, it provides an integrated workflow that connects natural-language input, constrained furniture placement, interactive editing, 3D preview, snapshot-guided image generation, localized image editing, and evaluation. Second, it defines a compact layout representation shared by the solver, frontend, snapshot compiler, renderer, and evaluation scripts. Third, it evaluates the system through two benchmark groups: layout generation and layout-conditioned image generation/editing. The layout benchmark measures geometric validity, request following, arrangement quality, valid-object completeness, and stability. The image benchmark measures layout fidelity, preset fidelity, edit success, and preservation of unrelated structure.
+
+\begin{flushright}
+\textbf{Student}\\[1.5cm]
+\studentname
+\end{flushright}
+\clearpage

@@ -1,0 +1,20 @@
+% Restructured book: conclusion and future work.
+\chapter{Conclusion and Future Work}
+
+\section{Conclusion}\label{sec:conclusion}
+
+This thesis developed an AI-assisted interior layout design and visualization system for living rooms and bedrooms. The system addresses two connected problems: generating an editable furniture layout from a natural-language brief and room geometry, and producing layout-consistent visualization images from the selected layout. The implemented prototype allows users to define room geometry with doors and windows, generate multiple layout variants, inspect and refine the result in 2D and 3D, and create or edit realistic renders from the selected scene.
+
+The experiments show that the hybrid workflow improves controllability in the tested setting. In the matched external comparison, RoomFlow full improves the mean overall layout score by 15.4 points over I-Design and 58.6 points over FlairGPT, with the clearest gains in geometry and arrangement. For image generation, SE-ESG achieves the highest tested macro layout-preservation mean at 0.587, while the completed preset-fidelity checks average 0.930. For image editing, object-scope preflight reaches a human edit score of 0.956 compared with 0.897 for prompt-image-only editing. These results support the use of deterministic geometry for editable layouts and structured visual guidance for generated and edited renders.
+
+\section{Future Work}\label{sec:future-work}
+
+The first future direction is to extend the completed evaluation beyond the current controlled benchmark. Future work should add a larger collection of real apartment layouts, more repeated provider runs, and user studies with non-professional users and interior-design practitioners. These studies could measure usability, perceived design quality, editing effort, and trust in the generated recommendations in addition to the automated metrics used in this thesis.
+
+The second direction is to extend the supported room types beyond living rooms and bedrooms. Kitchens, bathrooms, work rooms, and combined living-dining spaces require additional constraints such as appliance workflow, wet areas, storage zones, safety clearances, and multi-functional circulation. Extending the system to these spaces would make it more useful, but it would also require more careful domain modeling and evaluation.
+
+The third direction is to improve the image workflow. Stronger structural controls, more reliable masks, automatic layout-drift detection, and better object identity preservation could reduce cases where the render looks plausible but changes the selected design. A related direction is synchronizing image-only edits back into the editable 2D/3D layout when the edit corresponds to a concrete object change.
+
+\section{Final Remarks}\label{sec:final-remarks}
+
+The main lesson from this thesis is that AI-assisted interior design should not be treated as pure image generation. A useful system must keep a controllable representation of the room, furniture, openings, and user intent throughout the workflow. Generative models can provide semantic interpretation and visual realism, but they become more reliable when they are connected to deterministic geometry, editable state, and explicit evaluation. This hybrid view is the basis for RoomFlow and for future extensions of the work.

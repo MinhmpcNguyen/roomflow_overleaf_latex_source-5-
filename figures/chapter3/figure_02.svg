@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<defs>
+<marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M2,2 L10,6 L2,10 Z" fill="#3B7F50"/>
+</marker>
+<marker id="arrow-blue" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+<path d="M2,2 L10,6 L2,10 Z" fill="#546A7B"/>
+</marker>
+</defs>
+<rect width="1600" height="900" fill="#fbfaf7"/>
+<text x="64" y="70" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="#263238" text-anchor="start">Furniture placement as constrained optimization</text>
+<text x="64" y="108" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#5d6b78" text-anchor="start">Hard feasibility constraints reject unusable layouts; soft design costs rank viable candidates</text>
+<rect x="120" y="185" width="640" height="540" rx="0" fill="#EDF6FF" stroke="#2D82C7" stroke-width="5"/>
+<text x="145" y="225" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#2D82C7" text-anchor="start"><tspan>Room polygon P</tspan><tspan baseline-shift="sub" font-size="13">room</tspan></text>
+<line x1="120" y1="370" x2="120" y2="455" stroke="#F27D45" stroke-width="10" stroke-linecap="round"/>
+<text x="145" y="402" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#B76034" text-anchor="start">opening</text>
+<text x="145" y="426" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#B76034" text-anchor="start"><tspan>g</tspan><tspan baseline-shift="sub" font-size="11">k</tspan><tspan> + δ</tspan><tspan baseline-shift="sub" font-size="11">k</tspan><tspan> clearance</tspan></text>
+<rect x="255" y="305" width="220" height="115" rx="10" fill="#D8F2DC" stroke="#54A568" stroke-width="4"/>
+<text x="312" y="354" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start">blocking</text>
+<text x="329" y="383" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start"><tspan>R</tspan><tspan baseline-shift="sub" font-size="12">i</tspan><tspan>(θ</tspan><tspan baseline-shift="sub" font-size="12">i</tspan><tspan>)</tspan></text>
+<rect x="555" y="350" width="120" height="100" rx="10" fill="#FFE8A7" stroke="#B9832D" stroke-width="4"/>
+<text x="582" y="407" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start"><tspan>object R</tspan><tspan baseline-shift="sub" font-size="12">j</tspan></text>
+<path d="M475 358 C510 332, 535 332, 555 365" fill="none" stroke="#D8665B" stroke-width="4" marker-end="url(#arrow-blue)"/>
+<text x="491" y="330" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#D8665B" text-anchor="start">no overlap</text>
+<rect x="295" y="560" width="315" height="115" rx="9" fill="#FFE4E0" stroke="#D8665B" stroke-width="4"/>
+<text x="385" y="612" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#B34034" text-anchor="start">hard room wall</text>
+<text x="385" y="642" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#B34034" text-anchor="start">soft preference</text>
+<path d="M125 405 C185 510, 245 555, 295 600" fill="none" stroke="#546A7B" stroke-width="3" marker-end="url(#arrow-blue)"/>
+<text x="142" y="533" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="400" fill="#546A7B" text-anchor="start"><tspan>g</tspan><tspan baseline-shift="sub" font-size="11">k</tspan><tspan>-to-center path</tspan></text>
+<rect x="865" y="185" width="625" height="585" rx="18" fill="#FFFFFF" stroke="#B8C6D1" stroke-width="3"/>
+<text x="910" y="245" font-family="Arial, Helvetica, sans-serif" font-size="27" font-weight="700" fill="#263238" text-anchor="start">Constraint model</text>
+<text x="910" y="295" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#263238" text-anchor="start">Decision variables:</text>
+<text x="910" y="332" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="400" fill="#263238" text-anchor="start"><tspan>X = {(c</tspan><tspan baseline-shift="sub" font-size="13">i</tspan><tspan>, θ</tspan><tspan baseline-shift="sub" font-size="13">i</tspan><tspan>) | i = 1, ..., N}</tspan></text>
+<text x="910" y="385" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#263238" text-anchor="start">Hard constraints:</text>
+<text x="925" y="425" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#263238" text-anchor="start"><tspan>R</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>(θ</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>) ⊆ P</tspan><tspan baseline-shift="sub" font-size="11">room</tspan></text>
+<text x="925" y="463" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#263238" text-anchor="start"><tspan>area(R</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>(θ</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>) ∩ R</tspan><tspan baseline-shift="sub" font-size="11">j</tspan><tspan>(θ</tspan><tspan baseline-shift="sub" font-size="11">j</tspan><tspan>)) = 0</tspan></text>
+<text x="925" y="501" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#263238" text-anchor="start"><tspan>dist(R</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>(θ</tspan><tspan baseline-shift="sub" font-size="11">i</tspan><tspan>), g</tspan><tspan baseline-shift="sub" font-size="11">k</tspan><tspan>) ≥ δ</tspan><tspan baseline-shift="sub" font-size="11">k</tspan></text>
+<text x="925" y="539" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="400" fill="#263238" text-anchor="start"><tspan>path(g</tspan><tspan baseline-shift="sub" font-size="11">k</tspan><tspan>, center(P</tspan><tspan baseline-shift="sub" font-size="11">room</tspan><tspan>)) unblocked</tspan></text>
+<text x="910" y="600" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700" fill="#263238" text-anchor="start">Soft objective:</text>
+<text x="925" y="637" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start"><tspan>L</tspan><tspan baseline-shift="super" font-size="12">⋆</tspan><tspan> = arg min E(L)</tspan></text>
+<text x="1000" y="660" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" fill="#5d6b78" text-anchor="start"><tspan>L ∈ 𝓕</tspan></text>
+<text x="925" y="700" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start"><tspan>E(L) = Σ</tspan><tspan baseline-shift="sub" font-size="12">m</tspan><tspan> λ</tspan><tspan baseline-shift="sub" font-size="12">m</tspan><tspan> φ</tspan><tspan baseline-shift="sub" font-size="12">m</tspan><tspan>(L)</tspan></text>
+<text x="1000" y="735" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="400" fill="#263238" text-anchor="start"><tspan>+ Σ</tspan><tspan baseline-shift="sub" font-size="12">n</tspan><tspan> μ</tspan><tspan baseline-shift="sub" font-size="12">n</tspan><tspan> ψ</tspan><tspan baseline-shift="sub" font-size="12">n</tspan><tspan>(L)</tspan></text>
+<text x="925" y="760" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" fill="#5d6b78" text-anchor="start">φ: feasibility penalties; ψ: anchoring, visibility, adjacency</text>
+</svg>
