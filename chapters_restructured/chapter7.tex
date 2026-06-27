@@ -291,16 +291,16 @@ The minimal rectangular scenarios use rectangular rooms and short design briefs.
 Table~\ref{tab:minimal-rectangular-results} reports the comparison for minimal rectangular scenarios, split by whether fixed openings are present.
 
 \begingroup
-\small
-\setlength{\tabcolsep}{3pt}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[H]
 \centering
 \caption{External baseline results for minimal rectangular scenarios.}
 \label{tab:minimal-rectangular-results}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{1.7cm}|>{\raggedright\arraybackslash}p{2.0cm}|*{5}{>{\centering\arraybackslash}X|}}
+\begin{tabularx}{0.985\textwidth}{|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.95cm}|*{4}{>{\centering\arraybackslash}X|}}
 \hline
-\textbf{Openings} & \textbf{System} & \textbf{Overall \(\mu \pm \sigma\)} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
+\begin{tabular}[c]{@{}l@{}}\textbf{Opening}\\\textbf{condition}\end{tabular} & \textbf{System} & \begin{tabular}[c]{@{}c@{}}\textbf{Overall}\\\(\mu \pm \sigma\)\end{tabular} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
 \hline
 Without & RoomFlow full & 93.3 \(\pm\) 9.4 & \textbf{100.0} & 82.5 & \textbf{100.0} & 88.3 \\
 \hline
@@ -327,16 +327,16 @@ The comparison changes when a door and a window are added. RoomFlow keeps high s
 The detailed rectangular scenarios keep the room shape simple but use richer design briefs with required furniture and functional relations. Table~\ref{tab:detailed-rectangular-results} reports the comparison for this group, split by whether fixed openings are present.
 
 \begingroup
-\small
-\setlength{\tabcolsep}{3pt}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[H]
 \centering
 \caption{External baseline results for detailed rectangular scenarios.}
 \label{tab:detailed-rectangular-results}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{1.7cm}|>{\raggedright\arraybackslash}p{2.0cm}|*{5}{>{\centering\arraybackslash}X|}}
+\begin{tabularx}{0.985\textwidth}{|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.95cm}|*{4}{>{\centering\arraybackslash}X|}}
 \hline
-\textbf{Openings} & \textbf{System} & \textbf{Overall \(\mu \pm \sigma\)} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
+\begin{tabular}[c]{@{}l@{}}\textbf{Opening}\\\textbf{condition}\end{tabular} & \textbf{System} & \begin{tabular}[c]{@{}c@{}}\textbf{Overall}\\\(\mu \pm \sigma\)\end{tabular} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
 \hline
 Without & RoomFlow full & \textbf{100.0} \(\pm\) 0.0 & \textbf{100.0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.0} \\
 \hline
@@ -363,16 +363,16 @@ With openings, the difference becomes clearer. RoomFlow reaches 92.3 overall, wh
 The non-rectangular scenarios contain L-shaped, chamfered, side-recess, and bay-like rooms. This group is more difficult because the system must satisfy the same design brief while respecting irregular room boundaries. Table~\ref{tab:nonrectangular-results} reports the comparison for this group, split by whether fixed openings are present.
 
 \begingroup
-\small
-\setlength{\tabcolsep}{3pt}
+\footnotesize
+\setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
 \begin{table}[H]
 \centering
 \caption{External baseline results for non-rectangular scenarios.}
 \label{tab:nonrectangular-results}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{1.7cm}|>{\raggedright\arraybackslash}p{2.0cm}|*{5}{>{\centering\arraybackslash}X|}}
+\begin{tabularx}{0.985\textwidth}{|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{2.1cm}|>{\centering\arraybackslash}p{1.95cm}|*{4}{>{\centering\arraybackslash}X|}}
 \hline
-\textbf{Openings} & \textbf{System} & \textbf{Overall \(\mu \pm \sigma\)} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
+\begin{tabular}[c]{@{}l@{}}\textbf{Opening}\\\textbf{condition}\end{tabular} & \textbf{System} & \begin{tabular}[c]{@{}c@{}}\textbf{Overall}\\\(\mu \pm \sigma\)\end{tabular} & \textbf{Spatial} & \textbf{Brief} & \textbf{Function} & \textbf{Usable} \\
 \hline
 Without & RoomFlow full & \textbf{100.0} \(\pm\) 0.0 & \textbf{100.0} & \textbf{100.0} & \textbf{100.0} & \textbf{100.0} \\
 \hline
@@ -472,13 +472,13 @@ The extended stability holdout evaluates behavior that is not fully captured by 
 Table~\ref{tab:stability-holdout-results} reports the selected stability holdout metrics for the full pipeline and major ablated variants.
 
 \begingroup
-\small
-\setlength{\tabcolsep}{4pt}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.15}
-\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.35cm}|>{\raggedright\arraybackslash}p{1.85cm}|>{\raggedright\arraybackslash}p{2.35cm}|>{\raggedright\arraybackslash}X|}
 \caption{Selected stability holdout metrics for full and major ablated variants.}\label{tab:stability-holdout-results}\\
 \hline
-\textbf{Variant} & \textbf{Stability summary} & \textbf{Worst-case stability} & \textbf{Canonical} & \textbf{Style/material} & \textbf{Gallery diversity} \\
+\textbf{Variant} & \begin{tabular}[c]{@{}l@{}}\textbf{Stability}\\\textbf{summary}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Worst-case}\\\textbf{stability}\end{tabular} & \textbf{Canonical} & \begin{tabular}[c]{@{}l@{}}\textbf{Style and}\\\textbf{material}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Gallery}\\\textbf{diversity}\end{tabular} \\
 \hline
 Full & \textbf{95.0} & \textbf{90.4} & \textbf{97.8} & \textbf{84.6} & \textbf{100.0} \\
 \hline
