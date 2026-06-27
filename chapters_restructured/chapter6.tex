@@ -5,7 +5,7 @@ This chapter presents the construction of RoomFlow as a complete web-based inter
 
 \section{Architecture Design}\label{sec:architecture-design}
 
-The system follows a client-server architecture. The frontend is a React single-page application responsible for user input, 2D floor-plan editing, layout comparison, 3D preview, render control, account screens, and saved-design interactions. The backend is a FastAPI service responsible for authentication, inventory access, layout generation, artifact retrieval, image rendering, saved layouts, and generated-render storage. PostgreSQL stores user data, inventory metadata, saved layout cases, saved layouts, authentication sessions, and render records. External AI services are used for LLM-based semantic planning and for image generation or editing. When retrieval or semantic matching is needed, embedding services can support inventory or knowledge lookup. Provider keys and model configuration are handled only by the backend.
+The system follows a client-server architecture. The frontend is a React single-page application responsible for user input, 2D floor-plan editing, layout comparison, 3D preview, render control, account screens, and saved-design interactions. The backend is a FastAPI service responsible for authentication, inventory access, layout generation, artifact retrieval, image rendering, saved layouts, and generated-render storage. PostgreSQL stores user data, inventory metadata, saved layout cases, saved layouts, authentication sessions, and render records. External AI services are used for LLM-based semantic planning and for image generation or editing. When retrieval or semantic matching is needed, embedding services can support inventory or knowledge lookup. Provider keys and model configuration are handled only by the backend. In the implementation reported in this thesis, the backend provider configuration uses \texttt{gpt-5.4-mini} for text-based planning and visual preflight tasks, and \texttt{gpt-image-2} for photorealistic image generation and localized image editing.
 
 \subsection{Software Architecture Selection}\label{subsec:software-architecture-selection}
 
@@ -165,7 +165,7 @@ Backend API & FastAPI, Pydantic & Expose pipeline, auth, inventory, saved-layout
 \hline
 Persistence & PostgreSQL & Store inventory, users, sessions, saved layouts, and generated renders. \\
 \hline
-AI services & OpenAI-compatible text and image APIs & Run LLM planning stages, visual preflight, and image generation/editing. \\
+AI services & OpenAI-compatible text and image APIs; \texttt{gpt-5.4-mini} and \texttt{gpt-image-2} & Run LLM planning stages, visual preflight, and image generation/editing. \\
 \hline
 Geometry/evaluation & Shapely, Pillow, NumPy, image metrics & Score room geometry, overlaps, image structure, and visual outputs. \\
 \hline
