@@ -427,6 +427,10 @@ The ablations are grouped into semantic-planning, geometric-solver, and post-pro
 
 This subsection focuses on how each ablation affects the four primary layout metrics. The variants are organized according to the component groups introduced in Section~\ref{subsec:eval-layout-ablation}, but the discussion here focuses on their measurable impact on spatial feasibility, design brief compliance, functional arrangement quality, usable object completeness, and overall score.
 
+The variant names in Table~\ref{tab:primary-ablation-results} can be read as controlled ``what-if'' settings. \textit{Full} is the complete RoomFlow pipeline. The first group weakens how the system understands the user brief before solving. \textit{No request} removes the step that explicitly marks objects as required, preferred, optional, or forbidden. \textit{No tier} removes the step that decides object quantities and placement priority. \textit{No semantic} weakens the whole intent-understanding stage, while \textit{Minimal context} gives the solver only basic room and prompt information.
+
+The second group removes later refinement steps after candidate placements have been produced. \textit{No style} removes style-preference planning. \textit{No material} removes material metadata. \textit{No stylist} removes the final enrichment step that attaches style and inventory display information to valid layouts. \textit{No gallery} removes duplicate filtering and final selection of distinct layout variants.
+
 Table~\ref{tab:primary-ablation-results} reports the primary-metric results for the selected ablation variants.
 
 \begingroup
