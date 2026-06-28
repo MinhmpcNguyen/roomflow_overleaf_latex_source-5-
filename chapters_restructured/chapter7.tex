@@ -14,9 +14,7 @@ The benchmark contains 50 cases. Twenty cases are minimal rectangular rooms defi
 
 Each case also includes an expected-output specification used for evaluation. This specification records required object categories, allowed count ranges, a minimum usable-object count, and any case-specific spatial relations that should be checked. It does not define a single target layout, because several different arrangements may satisfy the same room brief. For this reason, the generated output is evaluated by constraint satisfaction and layout quality rather than by exact similarity to one hand-authored reference layout.
 
-Before scoring, every system output is normalized into a common object schema containing object category, footprint, position, and orientation. The evaluator then checks whether the layout stays inside the room, avoids invalid overlaps, keeps openings usable, follows the requested objects and relations, provides a usable arrangement, and includes enough valid objects. Experiment~2 additionally uses a 10-case stability holdout with richer style, material, palette, and gallery-diversity targets.
-
-Table~\ref{tab:7-3} summarizes the three benchmark groups used by the layout experiments.
+Before scoring, every system output is normalized into a common object schema containing object category, footprint, position, and orientation. The evaluator then checks whether the layout stays inside the room, avoids invalid overlaps, keeps openings usable, follows the requested objects and relations, provides a usable arrangement, and includes enough valid objects. Experiment~2 additionally uses a 10-case robustness holdout with richer style, material, palette, and gallery-diversity targets. The three benchmark groups used by the layout experiments are summarized in Table~\ref{tab:7-3}.
 
 \begingroup
 \small
@@ -42,9 +40,7 @@ A typical example is a compact bedroom measuring approximately \(4.0m \times 3.2
 
 Before scoring the full benchmark, each system output is normalized into the same 2D layout schema. This normalization makes the comparison independent of each system's original output format. Each normalized layout contains the room boundary, furniture categories, object footprints, positions, and orientations. The evaluator then measures whether the layout is spatially feasible, follows the design brief, supports functional use, and retains enough usable furniture.
 
-Both experiments use four primary component metrics and one weighted overall score. The four primary metrics are \textbf{Spatial Feasibility}, \textbf{Design Brief Compliance}, \textbf{Functional Arrangement Quality}, and \textbf{Usable Object Completeness}. All scores are reported on a 0--100 scale, where higher is better. Experiment~2 keeps these shared metrics and adds a separate stability holdout because the primary metrics do not fully measure style-material consistency, gallery diversity, reliability, or lower-tail behavior across repeated runs.
-
-Table~\ref{tab:7-4} summarizes the interpretation of each metric group before the detailed formulas are introduced in the following subsections.
+Both experiments use four primary component metrics and one weighted overall score. The four primary metrics are \textbf{Spatial Feasibility}, \textbf{Design Brief Compliance}, \textbf{Functional Arrangement Quality}, and \textbf{Usable Object Completeness}. All scores are reported on a 0--100 scale, where higher is better. Experiment~2 keeps these shared metrics and adds a separate robustness holdout because the primary metrics do not fully measure style-material consistency, gallery diversity, reliability, or lower-tail behavior across repeated runs. Table~\ref{tab:7-4} summarizes the interpretation of each metric group before the detailed formulas are introduced in the following subsections.
 
 \begingroup
 \small
@@ -63,14 +59,14 @@ Is the room comfortable to use? & Functional arrangement quality & Checks whethe
 \hline
 Are enough usable objects included? & Usable object completeness & Checks whether enough main blocking furniture remains after invalid out-of-room or overlapping objects are discounted. It is a minimum furnishing sufficiency check, not a direct measure of whether every requested object is valid. \\
 \hline
-Is the system reliable across runs? & Stability & Checks whether repeated runs maintain good quality and return useful gallery variants instead of occasionally collapsing into poor or duplicate outputs. \\
+Is the system reliable across runs? & Robustness & Checks whether repeated runs maintain good quality and return useful gallery variants instead of occasionally collapsing into poor or duplicate outputs. \\
 \hline
 \end{xltabular}
 \endgroup
 
 The four primary metrics are designed specifically for this benchmark rather than copied directly from a single standard benchmark. They are informed by common evaluation signals in indoor-layout and text-to-3D scene-generation studies, including out-of-boundary checks, overlap checks, accessibility, object selection, and instruction alignment. The purpose of the metric set is not to claim a universal standard for interior layout evaluation, but to provide a transparent and repeatable scoring protocol for the benchmark used in this thesis.
 
-The following subsections define each metric in more detail. Spatial feasibility focuses on hard spatial constraints. Design brief compliance evaluates whether the generated layout satisfies the user's brief. Functional arrangement quality measures practical usability among the valid objects. Usable object completeness checks whether enough main furniture remains after invalid objects are discounted, so it should be read together with the other metrics rather than as a complete request-following score. The final overall score combines these components with fixed weights, while the additional ablation metrics evaluate stability-related behavior.
+The following subsections define each metric in more detail. Spatial feasibility focuses on hard spatial constraints. Design brief compliance evaluates whether the generated layout satisfies the user's brief. Functional arrangement quality measures practical usability among the valid objects. Usable object completeness checks whether enough main furniture remains after invalid objects are discounted, so it should be read together with the other metrics rather than as a complete request-following score. The final overall score combines these components with fixed weights, while the additional ablation metrics evaluate robustness-related behavior.
 
 All component scores are reported on a 0--100 scale, using the following clipping function:
 \[
@@ -140,8 +136,33 @@ S_{\mathrm{overall}}=\mathrm{clip}_{0,100}\bigl(
 \]
 The weights give the largest share to spatial feasibility because a layout that crosses room boundaries or blocks openings is not usable even if it lists the right objects. Design brief compliance and functional arrangement quality receive equal weight because an early design must both answer the brief and remain functional. Usable object completeness receives a lower weight because it is a completeness check, not a full usability judgment. Failed or missing outputs are counted as zero because they do not produce a usable auto-fill layout.
 
-\subsection{Additional Metrics for the Ablation Experiment}
-The primary metrics are sufficient for comparing final layouts, but they can miss the role of components whose purpose is to improve style interpretation, output diversity, or reliability. Experiment~2 therefore adds four metric groups on the 10-case stability holdout. The \emph{canonical score} is the primary overall score of the production-selected variant. The \emph{style-material score} combines layout-style fit, palette fit, and material assignment. The \emph{gallery-diversity score} measures whether the returned gallery contains enough geometrically distinct variants. The \emph{reliability score} is 100 for a completed run and 0 for a failed run. Their weighted combination is reported as the \emph{stability summary score}; the worst observed stability score is also retained to expose occasional severe failures that a mean can hide.
+\subsection{Additional Robustness Metrics for the Ablation Experiment}
+The primary metrics are sufficient for comparing final layouts, but they can miss the role of components whose purpose is to improve style interpretation, output diversity, or reliability. Experiment~2 therefore adds four metric groups on the 10-case robustness holdout. The \emph{canonical score} is the primary overall score of the production-selected variant. The \emph{style-material score} combines layout-style fit, palette fit, and material assignment. The \emph{gallery-diversity score} measures whether the returned gallery contains enough geometrically distinct variants. The \emph{reliability score} is 100 for a completed run and 0 for a failed run. Their weighted combination is reported as the \emph{robustness summary score}; the worst observed robustness score is also retained to expose occasional severe failures that a mean can hide.
+
+For one case-run observation \(r\), let \(C_r\), \(SM_r\), \(G_r\), and \(Q_r\) denote the canonical, style-material, gallery-diversity, and reliability scores. The robustness score for that observation is computed as:
+\[
+R_r = 0.50C_r + 0.25SM_r + 0.15G_r + 0.10Q_r.
+\]
+The style-material score and gallery-diversity score are expanded as:
+\[
+\begin{aligned}
+SM_r &= 0.45SL_r + 0.35P_r + 0.20M_r,\\
+G_r &= 0.75D_r + 0.25V_r.
+\end{aligned}
+\]
+Here, \(SL_r\) is the style-layout fit, \(P_r\) is target-palette coverage, and \(M_r\) is material assignment. The style-layout fit combines density, center openness, wall anchoring, decor density, and daylight usage:
+\[
+SL_r = 0.30F_d + 0.25F_c + 0.20F_w + 0.15F_{\mathrm{decor}} + 0.10F_{\mathrm{day}}.
+\]
+Palette coverage and material assignment are computed as:
+\[
+\begin{aligned}
+P_r &= 100 \times \frac{|A_{\mathrm{pal}} \cap T_{\mathrm{pal}}|}{|T_{\mathrm{pal}}|},\\
+M_r &= 80 \times \frac{N_{\mathrm{mat}}}{N_{\mathrm{obj}}}
++20 \times \frac{\min(N_{\mathrm{fam}},3)}{3}.
+\end{aligned}
+\]
+If no target palette is specified, \(P_r\) is set to 100. In the material term, \(N_{\mathrm{mat}}\) is the number of objects with material or color metadata, \(N_{\mathrm{obj}}\) is the number of objects, and \(N_{\mathrm{fam}}\) is the number of detected material families. For gallery diversity, \(D_r=\min(100,100N_{\mathrm{distinct}}/N_{\mathrm{target}})\) and \(V_r=\min(100,100N_{\mathrm{variants}}/N_{\mathrm{target}})\). The table reports the mean of \(R_r\) as the robustness summary, \(\min R_r\) as worst-case robustness, and the corresponding means of \(C_r\), \(SM_r\), and \(G_r\) as the canonical, style-material, and gallery-diversity columns.
 
 \section{Metric Explanation Through Representative Examples}
 \label{subsec:eval-layout-scenario-analysis}
@@ -176,7 +197,7 @@ FlairGPT: objects=[sofa, armchair, tv_console, coffee_table]
 \end{verbatim}
 \endgroup
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/case_comparisons/simple_living_01_comparison.png}
 \caption{Simple living room case: 2D layout comparison across RoomFlow full, I-Design, and FlairGPT.}
@@ -211,7 +232,7 @@ FlairGPT: objects=[sofa, shoe_bench, tv_console, coffee_table]
 \end{verbatim}
 \endgroup
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/case_comparisons/living_l_shape_comparison.png}
 \caption{L-shaped living room case: 2D layout comparison across RoomFlow full, I-Design, and FlairGPT.}
@@ -246,7 +267,7 @@ FlairGPT: objects=[bed, wardrobe, compact_desk, nightstand]
 \end{verbatim}
 \endgroup
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/case_comparisons/bedroom_chamfer_comparison.png}
 \caption{Chamfered bedroom case: 2D layout comparison across RoomFlow full, I-Design, and FlairGPT.}
@@ -260,9 +281,7 @@ Figure~\ref{fig:7-3} illustrates the chamfered bedroom case, which combines non-
 
 Experiment~1 compares the complete RoomFlow pipeline with two external baselines, I-Design and FlairGPT. The purpose is to evaluate whether RoomFlow can generate more usable editable layouts under the same benchmark cases and scoring protocol. The comparison focuses on four aspects: spatial feasibility, design brief compliance, functional arrangement quality, and usable object completeness.
 
-The three systems are evaluated on the 50 benchmark cases described in Section~\ref{subsec:eval-layout-benchmark-cases}. RoomFlow receives the design brief, explicit room polygon, fixed openings, and furniture inventory. I-Design receives the same case information through a structured adapter, including room geometry and object requirements. FlairGPT receives an equivalent text-based description, where the room shape, openings, required objects, and spatial relations are written as a design brief.
-
-Table~\ref{tab:external-compared-systems} summarizes the systems compared in Experiment~1 and the input form used for each system.
+The three systems are evaluated on the 50 benchmark cases described in Section~\ref{subsec:eval-layout-benchmark-cases}. RoomFlow receives the design brief, explicit room polygon, fixed openings, and furniture inventory. I-Design receives the same case information through a structured adapter, including room geometry and object requirements. FlairGPT receives an equivalent text-based description, where the room shape, openings, required objects, and spatial relations are written as a design brief. Table~\ref{tab:external-compared-systems} summarizes the compared systems and the input form used for each one.
 
 \begingroup
 \small
@@ -286,15 +305,13 @@ To ensure a fair comparison, all generated outputs are converted into the same n
 
 \subsection{Minimal Rectangular Scenarios}
 
-The minimal rectangular scenarios use rectangular rooms and short design briefs. They are included as sanity cases before detailed object relations and irregular geometry are introduced. The design brief compliance check in this group is intentionally simpler than in later groups, because these cases mainly test whether a system can produce a basic usable room.
-
-Table~\ref{tab:minimal-rectangular-results} reports the comparison for minimal rectangular scenarios, split by whether fixed openings are present.
+The minimal rectangular scenarios use rectangular rooms and short design briefs. They are included as sanity cases before detailed object relations and irregular geometry are introduced. The design brief compliance check in this group is intentionally simpler than in later groups, because these cases mainly test whether a system can produce a basic usable room. Table~\ref{tab:minimal-rectangular-results} reports the comparison for minimal rectangular scenarios, split by whether fixed openings are present.
 
 \begingroup
 \footnotesize
 \setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{External baseline results for minimal rectangular scenarios.}
 \label{tab:minimal-rectangular-results}
@@ -330,7 +347,7 @@ The detailed rectangular scenarios keep the room shape simple but use richer des
 \footnotesize
 \setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{External baseline results for detailed rectangular scenarios.}
 \label{tab:detailed-rectangular-results}
@@ -366,7 +383,7 @@ The non-rectangular scenarios contain L-shaped, chamfered, side-recess, and bay-
 \footnotesize
 \setlength{\tabcolsep}{2pt}
 \renewcommand{\arraystretch}{1.25}
-\begin{table}[H]
+\begin{table}[!htbp]
 \centering
 \caption{External baseline results for non-rectangular scenarios.}
 \label{tab:nonrectangular-results}
@@ -396,7 +413,7 @@ FlairGPT recovers some design brief compliance and usable object completeness in
 
 \subsection{Overall Paired Comparison}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/figure_09_grouped_openings.png}
 \caption{Overall layout score by scenario group and opening condition.}
@@ -405,7 +422,7 @@ FlairGPT recovers some design brief compliance and usable object completeness in
 
 Figure~\ref{fig:7-4} summarizes the same pattern across the three scenario groups. In easy rooms without openings, solver-based validation has limited room to improve the result, so I-Design can match or exceed RoomFlow in some cases. The difference becomes clearer when the room contains doors, windows, or non-rectangular boundaries. In these cases, RoomFlow preserves room geometry and functional arrangement more reliably, while the baselines may still include the requested objects but place them in unusable positions.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/chapter4/figure_10.png}
 \caption{Paired delta of RoomFlow full against I-Design and FlairGPT.}
@@ -419,7 +436,7 @@ Figure~\ref{fig:7-5} provides the pooled paired statistics that summarize, rathe
 
 Experiment~2 evaluates the internal contribution of the main RoomFlow components. Unlike Experiment~1, which compares RoomFlow with external baselines, this experiment compares the complete pipeline with ablated variants of itself. Each ablation removes or weakens one mechanism to show which capability is lost when that component is not used.
 
-All variants receive the same benchmark input and are evaluated with the same scoring protocol. The comparison uses the four primary metrics: spatial feasibility, design brief compliance, functional arrangement quality, and usable object completeness. A separate stability holdout is also used to examine style-material consistency, gallery diversity, reliability, and lower-tail failures across repeated runs.
+All variants receive the same benchmark input and are evaluated with the same scoring protocol. The comparison uses the four primary metrics: spatial feasibility, design brief compliance, functional arrangement quality, and usable object completeness. A separate robustness holdout is also used to examine style-material consistency, gallery diversity, reliability, and lower-tail failures across repeated runs.
 
 The ablations are grouped into semantic-planning, geometric-solver, and post-processing variants. Semantic-planning ablations test the role of object requirements, priorities, relations, and style or material policy. Geometric-solver ablations test the role of collision checks, opening constraints, and circulation validation. Post-processing ablations test the role of gallery diversification, stylistic refinement, and final layout selection.
 
@@ -429,9 +446,7 @@ This subsection focuses on how each ablation affects the four primary layout met
 
 The variant names in Table~\ref{tab:primary-ablation-results} can be read as controlled ``what-if'' settings. \textit{Full} is the complete RoomFlow pipeline. The first group weakens how the system understands the user brief before solving. \textit{No request} removes the step that explicitly marks objects as required, preferred, optional, or forbidden. \textit{No tier} removes the step that decides object quantities and placement priority. \textit{No semantic} weakens the whole intent-understanding stage, while \textit{Minimal context} gives the solver only basic room and prompt information.
 
-The second group removes later refinement steps after candidate placements have been produced. \textit{No style} removes style-preference planning. \textit{No material} removes material metadata. \textit{No stylist} removes the final enrichment step that attaches style and inventory display information to valid layouts. \textit{No gallery} removes duplicate filtering and final selection of distinct layout variants.
-
-Table~\ref{tab:primary-ablation-results} reports the primary-metric results for the selected ablation variants.
+The second group removes later refinement steps after candidate placements have been produced. \textit{No style} removes style-preference planning. \textit{No material} removes material metadata. \textit{No stylist} removes the final enrichment step that attaches style and inventory display information to valid layouts. \textit{No gallery} removes duplicate filtering and final selection of distinct layout variants. Table~\ref{tab:primary-ablation-results} reports the primary-metric results for the selected ablation variants.
 
 \begingroup
 \small
@@ -467,22 +482,20 @@ The strongest degradation appears when semantic context is weakened. The full pi
 
 Some post-processing ablations obtain slightly higher scores on the four primary metrics. For example, the no-style, no-gallery, and no-stylist variants reach around 97 overall in this primary-metric view. This does not mean that the removed components are unnecessary. The four primary metrics mainly reward immediate spatial feasibility, design brief compliance, functional arrangement quality, and usable object completeness. They do not fully measure style-material consistency, gallery diversity, repeated-run reliability, or worst-case behavior.
 
-The primary-metric comparison therefore shows two points. First, semantic planning has a direct effect on layout quality. Second, some post-processing components mainly affect robustness and final variant quality rather than the immediate primary layout score. For this reason, the next subsection evaluates the same system family on a separate stability holdout.
+The primary-metric comparison therefore shows two points. First, semantic planning has a direct effect on layout quality. Second, some post-processing components mainly affect robustness and final variant quality rather than the immediate primary layout score. For this reason, the next subsection evaluates the same system family on a separate robustness holdout.
 
-\subsection{Extended Stability Holdout}
+\subsection{Extended Robustness Holdout}
 
-The extended stability holdout evaluates behavior that is not fully captured by the four primary layout metrics. It uses the 10-case holdout introduced in Section~\ref{subsec:eval-layout-benchmark-cases}, where the cases include richer style, material, palette, and gallery-diversity requirements. This evaluation is used only for the ablation experiment because these targets mainly test robustness and final variant quality rather than immediate spatial feasibility.
-
-Table~\ref{tab:stability-holdout-results} reports the selected stability holdout metrics for the full pipeline and major ablated variants.
+The extended robustness holdout evaluates behavior that is not fully captured by the four primary layout metrics. It uses the 10-case holdout introduced in Section~\ref{subsec:eval-layout-benchmark-cases}, where the cases include richer style, material, palette, and gallery-diversity requirements. This evaluation is used only for the ablation experiment because these targets mainly test robustness and final variant quality rather than immediate spatial feasibility. Table~\ref{tab:robustness-holdout-results} reports the selected robustness holdout metrics for the full pipeline and major ablated variants.
 
 \begingroup
 \footnotesize
 \setlength{\tabcolsep}{3pt}
 \renewcommand{\arraystretch}{1.15}
 \begin{xltabular}{\textwidth}{|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.25cm}|>{\raggedright\arraybackslash}p{2.35cm}|>{\raggedright\arraybackslash}p{1.85cm}|>{\raggedright\arraybackslash}p{2.35cm}|>{\raggedright\arraybackslash}X|}
-\caption{Selected stability holdout metrics for full and major ablated variants.}\label{tab:stability-holdout-results}\\
+\caption{Selected robustness holdout metrics for full and major ablated variants.}\label{tab:robustness-holdout-results}\\
 \hline
-\textbf{Variant} & \begin{tabular}[c]{@{}l@{}}\textbf{Stability}\\\textbf{summary}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Worst-case}\\\textbf{stability}\end{tabular} & \textbf{Canonical} & \begin{tabular}[c]{@{}l@{}}\textbf{Style and}\\\textbf{material}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Gallery}\\\textbf{diversity}\end{tabular} \\
+\textbf{Variant} & \begin{tabular}[c]{@{}l@{}}\textbf{Robustness}\\\textbf{summary}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Worst-case}\\\textbf{robustness}\end{tabular} & \textbf{Canonical} & \begin{tabular}[c]{@{}l@{}}\textbf{Style and}\\\textbf{material}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Gallery}\\\textbf{diversity}\end{tabular} \\
 \hline
 Full & \textbf{95.0} & \textbf{90.4} & \textbf{97.8} & \textbf{84.6} & \textbf{100.0} \\
 \hline
@@ -501,11 +514,11 @@ No material & 81.1 & 7.4 & 82.4 & 78.1 & 80.6 \\
 \end{xltabular}
 \endgroup
 
-The full pipeline performs best on the stability holdout, reaching 95.0 in overall stability score, 90.4 in worst-case score, 97.8 in canonical quality, 84.6 in style-material consistency, and 100.0 in gallery diversity. These results show that the complete pipeline is not only strong on average, but also more stable across repeated and style-sensitive cases.
+The full pipeline performs best on the robustness holdout, reaching 95.0 in robustness summary score, 90.4 in worst-case robustness score, 97.8 in canonical quality, 84.6 in style-material consistency, and 100.0 in gallery diversity. These results show that the complete pipeline is not only strong on average, but also more robust across repeated and style-sensitive cases.
 
 The ablated variants are much weaker in lower-tail behavior. For example, no-stylist, no-request, no-tier, no-gallery, no-style, and no-material variants all fall to around 7--8 in worst-case score, even though some of them looked competitive on the four primary metrics. This confirms that the primary scores alone are not sufficient to judge robustness.
 
-The stability holdout explains why some post-processing or style-related components should still be kept. Removing style, material, gallery selection, or final styling may not immediately damage containment or object counts, but it reduces stable variant quality, style-material consistency, and gallery diversity. Therefore, the ablation study supports keeping the complete RoomFlow pipeline: semantic planning improves layout quality, while post-processing and style-related modules improve robustness and user-facing variant quality.
+The robustness holdout explains why some post-processing or style-related components should still be kept. Removing style, material, gallery selection, or final styling may not immediately damage containment or object counts, but it reduces robust variant quality, style-material consistency, and gallery diversity. Therefore, the ablation study supports keeping the complete RoomFlow pipeline: semantic planning improves layout quality, while post-processing and style-related modules improve robustness and user-facing variant quality.
 
 \section{Discussion}\label{subsec:eval-layout-discussion}
 
@@ -515,4 +528,4 @@ The layout evaluation supports three conclusions. First, RoomFlow full is strong
 
 Implementation differences may affect the external comparison because I-Design and FlairGPT prompts and outputs must be converted to the common benchmark schema. The adapters preserve recoverable object categories, footprints, positions, and orientations, and all systems are scored by the same scripts, but conversion quality may still influence the result. The dataset also focuses on controlled living-room and bedroom cases rather than the full diversity of real apartments.
 
-The four primary metrics capture important geometric and functional properties, but they cannot fully represent subjective design preference or professional interior-design quality. Two repeated runs expose some non-deterministic variation but remain a limited sample. The confidence intervals and Holm adjustment reduce overstatement, while the stability holdout provides additional evidence for the internal comparison; the conclusions still apply to the tested benchmark rather than every possible interior-design task.
+The four primary metrics capture important geometric and functional properties, but they cannot fully represent subjective design preference or professional interior-design quality. Two repeated runs expose some non-deterministic variation but remain a limited sample. The confidence intervals and Holm adjustment reduce overstatement, while the robustness holdout provides additional evidence for the internal comparison; the conclusions still apply to the tested benchmark rather than every possible interior-design task.

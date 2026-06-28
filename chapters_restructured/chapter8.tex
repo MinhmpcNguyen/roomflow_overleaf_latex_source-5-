@@ -23,7 +23,7 @@ Four preservation metrics are used. \textbf{Edge structure} checks whether key e
 
 Figure~\ref{fig:image-metric-explanations} illustrates how these four metrics are interpreted on one representative source-render pair. The overlays show grids, arrows, object boxes, and structural cues to help the reader understand what each metric is intended to measure. The actual evaluator computes edge masks, depth estimates, and DINO features internally, rather than relying on the explanatory drawings themselves.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/image_flow_cases/image_metric_explanations.png}
 \caption{Visual interpretation of the four layout-preservation metrics.}
@@ -50,14 +50,14 @@ Experiment~1 compares six layout-guided rendering variants. All variants start f
 
 The six variants are organized by the amount of layout guidance used before rendering. \textbf{Snapshot Prompt (SP)} uses the source snapshot and a short rendering instruction. \textbf{Visible-Object Contract (CO)} adds visible-object information, making the main objects in the selected camera view explicit. \textbf{Contract with Preservation Constraints (CP)} adds constraints that specify which room elements, openings, and furniture arrangements should remain stable. \textbf{Locked Geometry Reference (LG)} provides an additional geometry reference to strengthen structural guidance. \textbf{Layout-Preservation Check (LVP)} refines the preservation constraints before rendering. \textbf{Snapshot with Edge/Silhouette Guidance (SE-ESG)} is the proposed workflow, where structural boundaries are explicitly marked to guide photorealistic rendering. Figure~\ref{fig:image-create-guidance-inputs} shows the image-based guidance inputs used by these variants, and Figure~\ref{fig:image-create-variant-outputs} shows their outputs for one shared source case.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/image_flow_cases/create_variant_inputs.png}
 \caption{Image-based guidance inputs used by the generation variants.}
 \label{fig:image-create-guidance-inputs}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/image_flow_cases/create_variant_outputs.png}
 \caption{Outputs of the six image-generation variants for one shared source case.}
@@ -94,7 +94,7 @@ The results show that Snapshot with Edge/Silhouette Guidance (SE-ESG) achieves t
 
 Preset fidelity is used as a supporting check. The evaluator scores whether the generated render follows the requested style, lighting, and scenery preset. A score of 0.75 is used as the operational pass threshold. Figure~\ref{fig:8-5} summarizes the preset-fidelity results after rerunning the complete rendering benchmark. The results show that all rendering variants pass the threshold, with an overall mean of 0.930. SE-ESG reaches 0.918, which is still clearly above the threshold. This means that the main difference between variants should be interpreted mainly through layout preservation, not preset following.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/chapter4/figure_14_preset_fidelity.png}
 \caption{Preset-fidelity results after rerunning the complete create benchmark.}
@@ -133,16 +133,14 @@ Overall, Experiment~1 supports using Snapshot with Edge/Silhouette Guidance (SE-
 
 Experiment~2 evaluates whether the localized editing workflow improves edit success while preserving unrelated room structure. The experiment compares two variants. The first variant is \textbf{Object-Scope Target Validation (OS)}, which uses the source render, edit instruction, selected target object or marked region, and preservation constraints. The second variant is the \textbf{Prompt-Image-Only Baseline (Prompt)}, which uses the source render and edit instruction without the same explicit target scope and preservation information.
 
-The benchmark contains 32 matched edit requests, executed twice for each variant. The requests are divided into four operation types: add, recolor, remove, and replace. Figure~\ref{fig:image-edit-variant-comparison} shows one matched recolor example, where the two variants are applied to the same source render and edit instruction. This example illustrates the main purpose of object-scope editing: the target object should change, while the room shell, camera view, openings, and unrelated furniture should remain stable.
+The benchmark contains 32 matched edit requests, executed twice for each variant. The requests are divided into four operation types: add, recolor, remove, and replace. Figure~\ref{fig:image-edit-variant-comparison} shows one matched recolor example, where the two variants are applied to the same source render and edit instruction. This example illustrates the main purpose of object-scope editing: the target object should change, while the room shell, camera view, openings, and unrelated furniture should remain stable. Table~\ref{tab:8-3} summarizes the manual edit scores by operation.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter4/image_flow_cases/edit_variant_comparison.png}
 \caption{The two image-editing variants on one matched recolor request.}
 \label{fig:image-edit-variant-comparison}
 \end{figure}
-
-Table~\ref{tab:8-3} summarizes the manual edit scores by operation.
 
 \Needspace{18\baselineskip}
 \begin{table}[!htbp]

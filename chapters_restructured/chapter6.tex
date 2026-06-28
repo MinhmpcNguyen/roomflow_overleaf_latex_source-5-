@@ -143,7 +143,7 @@ design\_knowledge & id, tenant\_id, title/content, category/tags, source/meta & 
 
 \subsection{Libraries and Tools}\label{subsec:libraries-and-tools}
 
-The project uses a web stack and AI-service integration rather than a single monolithic desktop application. The \hyperref[tab:6-2]{table below} summarizes the main tools and libraries used in the implemented system.
+The project uses a web stack and AI-service integration rather than a single monolithic desktop application, and Table~\ref{tab:6-2} summarizes the main tools and libraries used in the implemented system.
 
 
 \begingroup
@@ -198,7 +198,7 @@ Backend source & Backend API, application services, planning modules, solver int
 \hline
 Frontend source & React workspace, 2D canvas editor, 3D preview, account UI, layout variant panel, and render controls & Provides the interactive user workspace for room editing, variant review, preview, rendering, and saved artifacts. \\
 \hline
-Evaluation scripts & Layout benchmark, ablation runners, stability evaluation, image-flow evaluation, chart generation, and document figures & Supports the quantitative and qualitative evaluation reported in Chapters 7 and 8. \\
+Evaluation scripts & Layout benchmark, ablation runners, robustness evaluation, image-flow evaluation, chart generation, and document figures & Supports the quantitative and qualitative evaluation reported in Chapters 7 and 8. \\
 \hline
 Main API groups & auth, account, inventory, pipeline & Four route groups cover login, persistence, inventory, and AI workflows. \\
 \hline
@@ -252,9 +252,7 @@ Figure~\ref{fig:6-10} shows the generated perspective render beside its 3D layou
 
 \section{Deployment}\label{sec:deployment}
 
-The project includes configuration files for both local development and Docker-based execution. Docker Compose starts the backend service and PostgreSQL database with consistent environment variables. During development, the frontend can run separately with Vite and communicate with the backend through REST and server-sent event endpoints. Provider keys, database URLs, authentication secrets, and model settings are kept outside the source code through environment variables. This deployment is sufficient for thesis evaluation and local demonstration, while production deployment would require stronger monitoring, rate limiting, backup, and secret-management policies.
-
-Table~\ref{tab:6-4} summarizes the deployment components and the configuration responsibilities for each part.
+The project includes configuration files for both local development and Docker-based execution. Docker Compose starts the backend service and PostgreSQL database with consistent environment variables. During development, the frontend can run separately with Vite and communicate with the backend through REST and server-sent event endpoints. Provider keys, database URLs, authentication secrets, and model settings are kept outside the source code through environment variables. This deployment is sufficient for thesis evaluation and local demonstration, while production deployment would require stronger monitoring, rate limiting, backup, and secret-management policies. Table~\ref{tab:6-4} summarizes the deployment components and the configuration responsibilities for each part.
 
 \begingroup
 \small

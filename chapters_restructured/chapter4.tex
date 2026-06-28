@@ -15,7 +15,7 @@ For example, the user can enter a design brief describing a small guest bedroom 
 
 \hyperref[fig:4-1]{Figure~4.1} summarizes the overall processing flow of the \textbf{Automatic Interior Layout Design} pipeline. The figure organizes the pipeline into five module groups. First, room interpretation normalizes the design case and fixed room geometry. Second, semantic planning extracts furniture requirements, priorities, relations, functional clusters, and style information. Third, the layout-program group converts these planning results into anchor-first placement concepts and solver-ready relation plans. Fourth, geometric solving places objects, repairs near-valid candidates, validates spatial constraints, and scores feasible layouts. Finally, the finalization stage restores eligible accessories, binds inventory and style metadata, removes redundant candidates, and selects a small gallery of distinct editable layout variants for the user.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth,height=0.78\textheight,keepaspectratio]{figures/chapter4/problem1_flow_detailed.pdf}
 \caption{Detailed module groups and intermediate artifacts in automatic layout generation.}
@@ -38,7 +38,7 @@ This step is necessary because a natural-language design brief is not directly u
 
 Figure~\ref{fig:4-2} summarizes the semantic planning flow. The process starts from the user brief and the available furniture inventory, then extracts the intended room type, required furniture, optional objects, quantity ranges, priority levels, functional relations, and style policy. The object requirement contract determines which objects are required, preferred-if-fit, optional, or excluded. The count and priority plan decides how many object instances should be considered and which objects should be protected during pruning. The relation plan describes functional relations such as facing, adjacency, proximity, support, and window-related preferences. The style policy records visual preferences such as density, material tendency, color palette, and decorative level without directly changing the room geometry.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/semantic_planning_flow.pdf}
 \caption{Semantic planning flow from user intent and inventory scope to objects, quantities, priorities, relations, and style policy.}
@@ -57,7 +57,7 @@ The module first normalizes the coordinate system and validates the room boundar
 
 Figure~\ref{fig:4-3} illustrates this transformation from raw room data to a compact room model. The process starts with the boundary polygon, doors, windows, and room metadata. It then normalizes geometry, attaches openings to wall segments, derives clearance and circulation constraints, and creates a shared room model containing the polygon, wall features, opening zones, and solver-facing spatial constraints. The figure emphasizes that room modeling is a deterministic geometry-processing step, not a language-generation step.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/room_modeling_flow.pdf}
 \caption{Room modeling flow from raw boundary and opening data to the shared geometric constraints used by later modules.}
@@ -72,7 +72,7 @@ The object program module converts the semantic plan and room model into a struc
 
 Figure~\ref{fig:4-4} summarizes how the object program is connected to geometric solving, validation, repair, and scoring. The input consists of the semantic plan, the room model, and the furniture inventory. The object-program stage selects objects, compiles relations, and builds a solver-ready placement program. The geometric solver then generates anchor-based concepts, places furniture, validates hard constraints, repairs near-valid candidates when possible, and scores feasible layouts. The output is a set of candidate layouts with object coordinates, scores, and diagnostic information.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/object_program_solver_flow.pdf}
 \caption{Object-program construction and geometric solving from structured requirements to validated furniture coordinates.}

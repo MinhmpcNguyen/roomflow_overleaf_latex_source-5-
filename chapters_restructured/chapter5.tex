@@ -15,7 +15,7 @@ Both branches produce traceable render artifacts. A generated render remains lin
 
 The following sections describe these two branches in detail. Section 5.2 presents the image-rendering workflow, including snapshot-based layout conditioning, scene and visible-object contracts, and structured prompt packaging. Section 5.3 presents the image-editing workflow, including edit request construction, target scope, target validation, preservation constraints, and edited render output.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/problem2_flow_overview.pdf}
 \caption{Overall flow from the selected editable layout to photorealistic generation, localized editing, and traceable render artifacts.}
@@ -30,7 +30,7 @@ For example, consider a living-room layout viewed from the selected camera posit
 
 \hyperref[fig:5-2]{Figure~5.2} summarizes this layout-guided rendering flow. The system first reconstructs the selected layout in the 3D preview and captures the chosen view as a snapshot. It then combines the snapshot with visible-object information, preservation constraints, and visual presets before forming the final rendering request for the image model. The following subsections explain these steps in order: snapshot-based layout conditioning, visible-object and preservation contracts, and visual preset control with rendering request assembly.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/image_generation_flow.pdf}
 \caption{Image-generation flow that compiles the 3D snapshot, visible objects, visual preset, and preservation evidence into a provider request.}
@@ -41,7 +41,7 @@ For example, consider a living-room layout viewed from the selected camera posit
 
 Snapshot-based layout conditioning is the first step used to keep the generated render close to the selected layout. A snapshot is a captured view of the 3D preview from the camera angle chosen by the user. It shows the visible room structure, openings, furniture positions, and approximate object shapes before photorealistic rendering. In RoomFlow, this snapshot acts as layout evidence for the image model, so the model does not have to infer the room arrangement from text alone.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.94\textwidth]{figures/chapter5/snapshot_layout_conditioning_example.png}
 \caption{Snapshot-based layout conditioning from a real living-room case. The image captures the selected 3D camera view before photorealistic rendering.}
@@ -60,7 +60,7 @@ Visible-object and preservation contracts specify which parts of the selected vi
 
 The contract combines three types of evidence. A camera-aligned structural guide highlights visible object boundaries and room surfaces in the same view as the snapshot. Visible-object information records the main objects seen by the camera, including their categories, approximate image regions, and layout roles. Preservation constraints state what should not change, such as camera framing, room shell, door and window positions, object count, object scale, relative depth order, and major furniture arrangement.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/visible_object_contract_example.png}
 \caption{Visible-object and preservation evidence from the same living-room case. The structural guide follows the selected camera view and highlights visible object boundaries and room surfaces.}
@@ -77,7 +77,7 @@ The style, lighting, and scenery presets are separated from geometry. A style pr
 
 \hyperref[fig:5-3]{Figure~\ref*{fig:5-3}} shows the generated render from the same living-room case used in the snapshot and preservation examples.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.92\textwidth]{figures/chapter5/create_render_only_example.png}
 \caption{Generated render from the same living-room case used for snapshot and preservation-contract illustration.}
@@ -92,7 +92,7 @@ Localized image editing allows the user to revise a generated render without res
 
 \hyperref[fig:5-4]{Figure~\ref*{fig:5-4}} summarizes the localized editing flow. The input consists of the approved source render, the user's edit instruction, and a target object or target region. The system then prepares the edit scope, checks whether the target is clear enough, adds preservation constraints, and sends a controlled editing request to the image model. The output is an edited render linked to the source render and target scope, so that later evaluation can check both edit success and unintended changes outside the edited region.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/image_editing_flow.pdf}
 \caption{Localized image-editing flow from source render, instruction, and target scope to an audited edited artifact.}
@@ -117,7 +117,7 @@ The system then defines preservation constraints for the parts of the image that
 
 \hyperref[fig:5-5]{Figure~\ref*{fig:5-5}} illustrates this process with a real edit-flow example. The selected target region shows where the requested operation is allowed, while the rest of the room is treated as protected context. This step does not guarantee perfect editing, but it reduces ambiguity and provides a clearer basis for evaluating edit success and structure preservation in Chapter 8.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter5/edit_case_example.png}
 \caption{Real edit-flow example: the source render is edited by applying the requested operation to the marked target region while preserving the camera, room shell, and unrelated furniture.}
@@ -130,7 +130,7 @@ The output of localized image editing is an edited image that is connected to th
 
 \hyperref[fig:5-6]{Figure~\ref*{fig:5-6}} shows the final edited render artifact from a real localized add operation. The edited image is stored together with its source render and target region so that the result can be inspected later. This link is important because evaluation must check both whether the requested edit was applied and whether the rest of the room was preserved.
 
-\begin{figure}[H]
+\begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.96\textwidth]{figures/chapter5/edit_output_example.png}
 \caption{Edited render output from a real localized add operation, showing the generated artifact that remains linked to the source render and target region.}
