@@ -61,7 +61,7 @@ Does the layout follow the design brief? & Design brief compliance & Checks whet
 \hline
 Is the room comfortable to use? & Functional arrangement quality & Checks whether the valid objects form a sensible room arrangement: main furniture should be reachable, circulation should remain open, and the arrangement should not feel awkward. \\
 \hline
-Are enough usable objects included? & Usable object completeness & Counts main furniture that remains usable after removing objects that are outside the room or involved in blocking overlaps. It catches outputs that mention many objects but leave too few usable ones. \\
+Are enough usable objects included? & Usable object completeness & Checks whether enough main blocking furniture remains after invalid out-of-room or overlapping objects are discounted. It is a minimum furnishing sufficiency check, not a direct measure of whether every requested object is valid. \\
 \hline
 Is the system reliable across runs? & Stability & Checks whether repeated runs maintain good quality and return useful gallery variants instead of occasionally collapsing into poor or duplicate outputs. \\
 \hline
@@ -70,7 +70,7 @@ Is the system reliable across runs? & Stability & Checks whether repeated runs m
 
 The four primary metrics are designed specifically for this benchmark rather than copied directly from a single standard benchmark. They are informed by common evaluation signals in indoor-layout and text-to-3D scene-generation studies, including out-of-boundary checks, overlap checks, accessibility, object selection, and instruction alignment. The purpose of the metric set is not to claim a universal standard for interior layout evaluation, but to provide a transparent and repeatable scoring protocol for the benchmark used in this thesis.
 
-The following subsections define each metric in more detail. Spatial feasibility focuses on hard spatial constraints. Design brief compliance evaluates whether the generated layout satisfies the user's brief. Functional arrangement quality measures practical usability among the valid objects. Usable object completeness checks whether enough usable furniture remains after invalid objects are discounted. The final overall score combines these components with fixed weights, while the additional ablation metrics evaluate stability-related behavior.
+The following subsections define each metric in more detail. Spatial feasibility focuses on hard spatial constraints. Design brief compliance evaluates whether the generated layout satisfies the user's brief. Functional arrangement quality measures practical usability among the valid objects. Usable object completeness checks whether enough main furniture remains after invalid objects are discounted, so it should be read together with the other metrics rather than as a complete request-following score. The final overall score combines these components with fixed weights, while the additional ablation metrics evaluate stability-related behavior.
 
 All component scores are reported on a 0--100 scale, using the following clipping function:
 \[
@@ -116,7 +116,7 @@ S_{\mathrm{function}}=\mathrm{clip}_{0,100}\bigl(
 Unlike spatial feasibility, this score uses only count-based penalties because it is meant to summarize whether repeated spatial incidents make the room hard to use.
 
 \subsection{Usable Object Completeness}
-This metric is adapted from object-selection and object-coverage signals in prior work, but applies a stricter definition by counting only main blocking furniture that remains usable after invalid out-of-room or overlapping objects are excluded~\cite{al2024IDesignPersonalized,al2024HolodeckLanguageGuided,Littlefair2025FlairgptRepurposingLlms}.
+This metric is adapted from object-selection and object-coverage signals in prior work, but applies a stricter lower-bound definition: it counts only main blocking furniture that remains usable after invalid out-of-room or overlapping objects are excluded~\cite{al2024IDesignPersonalized,al2024HolodeckLanguageGuided,Littlefair2025FlairgptRepurposingLlms}. It does not replace design brief compliance; instead, it checks whether the layout still contains enough usable core furniture after geometric filtering.
 \[
 S_{\mathrm{usable}} =
 \begin{cases}
@@ -253,7 +253,7 @@ FlairGPT: objects=[bed, wardrobe, compact_desk, nightstand]
 \label{fig:7-3}
 \end{figure}
 
-Figure~\ref{fig:7-3} illustrates the chamfered bedroom case, which combines non-rectangular geometry with door and window constraints. I-Design and FlairGPT follow several object-name requirements, so their design brief compliance scores are not zero. The spatial feasibility scores show the missing part: some placements become invalid under the clipped room polygon, opening-clearance checks, or overlap checks, and the usable object completeness and functional arrangement scores fall even though many requested object names are present. RoomFlow full satisfies the same main object requirements while also keeping the blocking objects valid and accessible.
+Figure~\ref{fig:7-3} illustrates the chamfered bedroom case, which combines non-rectangular geometry with door and window constraints. I-Design and FlairGPT follow several object-name requirements, so their design brief compliance scores are not zero. The spatial feasibility scores show the missing part: some placements become invalid under the clipped room polygon, opening-clearance checks, or overlap checks. I-Design still receives 100.0 on usable object completeness because this metric only checks whether the number of remaining valid blocking objects reaches the case minimum after invalid out-of-bound or overlapping objects are discounted; it does not mean that every requested object is geometrically valid. Its low spatial feasibility and functional arrangement scores capture those geometric failures. RoomFlow full satisfies the same main object requirements while also keeping the blocking objects valid and accessible.
 
 \section{Experiment 1: Comparison with External Baselines}
 \label{subsec:eval-layout-external-baselines}
