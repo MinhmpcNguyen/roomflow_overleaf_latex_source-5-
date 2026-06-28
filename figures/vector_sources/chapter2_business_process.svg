@@ -22,9 +22,10 @@
 
   <rect class="box" x="335" y="255" width="330" height="75"/>
   <text class="label" x="500" y="293">Create or load room</text>
-  <line class="plain" x1="500" y1="330" x2="500" y2="380"/>
-  <line class="line" x1="500" y1="380" x2="295" y2="380"/>
-  <line class="line" x1="500" y1="380" x2="705" y2="380"/>
+  <line class="plain" x1="500" y1="330" x2="500" y2="355"/>
+  <line class="plain" x1="295" y1="355" x2="705" y2="355"/>
+  <line class="line" x1="295" y1="355" x2="295" y2="380"/>
+  <line class="line" x1="705" y1="355" x2="705" y2="380"/>
 
   <rect class="box" x="125" y="380" width="340" height="85"/>
   <text class="label" x="295" y="423">Manual layout editing</text>
