@@ -149,19 +149,19 @@ The benchmark contains 32 matched edit requests, executed twice for each variant
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.15}
 \caption{Image-editing manual score and paired metric deltas by operation.}\label{tab:8-3}
-\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{1.8cm}|>{\centering\arraybackslash}p{1.2cm}|>{\raggedright\arraybackslash}p{3.2cm}|>{\raggedright\arraybackslash}X|}
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}p{1.9cm}|>{\raggedright\arraybackslash}p{3.4cm}|>{\raggedright\arraybackslash}X|}
 \hline
-\textbf{Operation} & \textbf{n pairs} & \textbf{Manual score OS / Prompt} & \textbf{Main reading} \\
+\textbf{Operation} & \textbf{Manual score OS / Prompt} & \textbf{Main reading} \\
 \hline
-Overall & 64 & \textbf{0.956} / 0.897 & Object-scope preflight improves semantic edit success; prompt-only stays closer to source structure. \\
+Overall & \textbf{0.956} / 0.897 & Object-scope preflight improves semantic edit success; prompt-only stays closer to source structure. \\
 \hline
-Add & 16 & 0.963 / \textbf{0.975} & Both variants usually succeed; the difference is not significant. \\
+Add & 0.963 / \textbf{0.975} & Both variants usually succeed; the difference is not significant. \\
 \hline
-Recolor & 16 & \textbf{1.000} / 0.775 & Object-scope preflight is clearly better because the target object and color are explicit. \\
+Recolor & \textbf{1.000} / 0.775 & Object-scope preflight is clearly better because the target object and color are explicit. \\
 \hline
-Remove & 16 & \textbf{0.975} / 0.963 & The two variants are close, with a small object-scope advantage. \\
+Remove & \textbf{0.975} / 0.963 & The two variants are close, with a small object-scope advantage. \\
 \hline
-Replace & 16 & \textbf{0.887} / 0.875 & Replacement is the hardest operation for both variants. \\
+Replace & \textbf{0.887} / 0.875 & Replacement is the hardest operation for both variants. \\
 \hline
 \end{tabularx}
 \end{table}
