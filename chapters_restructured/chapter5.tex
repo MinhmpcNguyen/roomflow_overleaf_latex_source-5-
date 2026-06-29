@@ -28,12 +28,12 @@ The rendering branch converts the selected editable layout into a photorealistic
 
 For example, consider a living-room layout viewed from the selected camera position. The snapshot shows the room from that view. The visible-object information records the main objects seen by the camera, such as the sofa, coffee table, TV console, shelving, rug, and window. The preservation information specifies what should not change, such as the room shell, window position, camera framing, and major furniture arrangement. The visual presets describe the intended appearance, such as warm materials with soft daylight.
 
-\hyperref[fig:5-2]{Figure~5.2} summarizes this layout-guided rendering flow. The system first reconstructs the selected layout in the 3D preview and captures the chosen view as a snapshot. It then combines the snapshot with visible-object information, preservation constraints, and visual presets before forming the final rendering request for the image model. The following subsections explain these steps in order: snapshot-based layout conditioning, visible-object and preservation contracts, and visual preset control with rendering request assembly.
+\hyperref[fig:5-2]{Figure~5.2} summarizes this layout-guided rendering flow. The layout-derived input contains the 3D snapshot, visible-object map, and visual preset. The conditioning compiler then builds the visual guide, scene contract, object contract, and prompt package. During provider execution, the prompt package is sent to the image model, the output and metadata are saved, and the perspective image is returned as a photorealistic render linked to the selected layout. The following subsections explain these steps in order: snapshot-based layout conditioning, visible-object and preservation contracts, and visual preset control with rendering request assembly.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/image_generation_flow.pdf}
-\caption{Image-generation flow that compiles the 3D snapshot, visible objects, visual preset, and preservation evidence into a provider request.}
+\caption{Layout-guided rendering flow from layout-derived inputs through conditioning compiler and provider execution.}
 \label{fig:5-2}
 \end{figure}
 
@@ -73,9 +73,7 @@ The contract combines three types of evidence. A camera-aligned structural guide
 
 The final rendering request combines layout evidence with visual preset control. The provider-facing request is organized into stable sections: source snapshot, visible-object information, preservation requirements, style preset, lighting preset, scenery preset, and negative constraints. This structure makes requests easier to inspect, compare, and reproduce across experiments.
 
-The style, lighting, and scenery presets are separated from geometry. A style preset may request modern, minimalist, boho, or warm material choices. A lighting preset may request daylight, soft evening light, or studio-like clarity. A scenery preset may describe the outside view or environmental mood. These presets should improve visual appearance without changing the underlying layout goal.
-
-\hyperref[fig:5-3]{Figure~\ref*{fig:5-3}} shows the generated render from the same living-room case used in the snapshot and preservation examples.
+The style, lighting, and scenery presets are separated from geometry. A style preset may request modern, minimalist, boho, or warm material choices. A lighting preset may request daylight, soft evening light, or studio-like clarity. A scenery preset may describe the outside view or environmental mood. These presets should improve visual appearance without changing the underlying layout goal, as illustrated by the generated render in \hyperref[fig:5-3]{Figure~\ref*{fig:5-3}} from the same living-room case used in the snapshot and preservation examples.
 
 \begin{figure}[!htbp]
 \centering
@@ -90,12 +88,12 @@ In \hyperref[fig:5-3]{Figure~\ref*{fig:5-3}}, the render improves material reali
 
 Localized image editing allows the user to revise a generated render without restarting the complete layout and rendering workflow. Instead of generating a new image from a blank prompt, the system starts from an approved source render and applies a specific edit operation, such as adding, removing, replacing, or recoloring an element. The purpose is to make a targeted visual change while keeping the camera view, room shell, openings, and unrelated furniture stable.
 
-\hyperref[fig:5-4]{Figure~\ref*{fig:5-4}} summarizes the localized editing flow. The input consists of the approved source render, the user's edit instruction, and a target object or target region. The system then prepares the edit scope, checks whether the target is clear enough, adds preservation constraints, and sends a controlled editing request to the image model. The output is an edited render linked to the source render and target scope, so that later evaluation can check both edit success and unintended changes outside the edited region.
+\hyperref[fig:5-4]{Figure~\ref*{fig:5-4}} summarizes the localized editing flow. The source and target input consists of the approved source render, the user's edit instruction, and the target scope. The edit request compiler then performs target validation, builds an edit guide, writes a preservation contract, and creates the provider request. During provider execution, the image model produces an edited image, the output and metadata are saved, and the final artifact remains linked to the source render and target scope so that later evaluation can check both edit success and unintended changes outside the edited region.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter5/image_editing_flow.pdf}
-\caption{Localized image-editing flow from source render, instruction, and target scope to an audited edited artifact.}
+\caption{Localized image-editing flow from source-and-target input through edit request compiler and provider execution.}
 \label{fig:5-4}
 \end{figure}
 

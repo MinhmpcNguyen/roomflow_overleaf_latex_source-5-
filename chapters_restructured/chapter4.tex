@@ -36,12 +36,12 @@ The semantic planning module converts the user's design brief into solver-ready 
 
 This step is necessary because a natural-language design brief is not directly usable by a geometric solver. Even when the user explicitly lists the desired furniture, the system still needs to convert the brief into operational layout information. For example, a request that a vanity should be near the window, a bed should remain easy to access, or the room should feel uncluttered must be translated into object priorities, spatial relations, placement preferences, and density constraints. These semantic decisions narrow the search space before geometric placement begins.
 
-Figure~\ref{fig:4-2} summarizes the semantic planning flow. The process starts from the user brief and the available furniture inventory, then extracts the intended room type, required furniture, optional objects, quantity ranges, priority levels, functional relations, and style policy. The object requirement contract determines which objects are required, preferred-if-fit, optional, or excluded. The count and priority plan decides how many object instances should be considered and which objects should be protected during pruning. The relation plan describes functional relations such as facing, adjacency, proximity, support, and window-related preferences. The style policy records visual preferences such as density, material tendency, color palette, and decorative level without directly changing the room geometry.
+Figure~\ref{fig:4-2} summarizes the semantic planning module using the same intermediate artifacts as the implementation. The input package combines the user brief, the normalized room model, and the inventory scope. The style policy compiler turns visual intent into density, material, palette, and style signals. The relation planner organizes furniture into functional relations. The request contract classifies objects as required, preferred-if-fit, optional, or excluded. The tier count director then decides candidate quantities and placement participation levels. The module returns structured requirements for the layout-program and solver stages.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/semantic_planning_flow.pdf}
-\caption{Semantic planning flow from user intent and inventory scope to objects, quantities, priorities, relations, and style policy.}
+\caption{Semantic planning flow from input package to structured requirements.}
 \label{fig:4-2}
 \end{figure}
 
@@ -55,12 +55,12 @@ The room modeling module converts raw room geometry into a normalized, solver-re
 
 The module first normalizes the coordinate system and validates the room boundary. It checks whether the polygon forms a usable indoor region, identifies wall segments, and rejects invalid geometry that cannot support layout generation. It then attaches each door or window to a corresponding wall segment and converts the opening into geometric constraints. A door produces a clearance region that should not be blocked by furniture, while a window can define a daylight-related preference zone for objects such as desks, vanities, or reading furniture.
 
-Figure~\ref{fig:4-3} illustrates this transformation from raw room data to a compact room model. The process starts with the boundary polygon, doors, windows, and room metadata. It then normalizes geometry, attaches openings to wall segments, derives clearance and circulation constraints, and creates a shared room model containing the polygon, wall features, opening zones, and solver-facing spatial constraints. The figure emphasizes that room modeling is a deterministic geometry-processing step, not a language-generation step.
+Figure~\ref{fig:4-3} illustrates this transformation from raw room data to a compact room model. The process starts with the boundary polygon, openings, and room metadata. It then normalizes geometry, attaches openings to wall segments, derives clearance and circulation constraints, and builds a compact scene model containing the polygon, wall features, opening zones, and solver-facing spatial constraints. The figure emphasizes that room modeling is a deterministic geometry-processing step, not a language-generation step.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/room_modeling_flow.pdf}
-\caption{Room modeling flow from raw boundary and opening data to the shared geometric constraints used by later modules.}
+\caption{Room modeling flow from boundary polygon, openings, and room metadata to the compact room model.}
 \label{fig:4-3}
 \end{figure}
 
@@ -70,12 +70,12 @@ The resulting room model gives later modules more information than a raw polygon
 
 The object program module converts the semantic plan and room model into a structured placement problem. It selects the furniture objects that should participate in the solver, assigns each object a role, and converts semantic relations into geometric constraints or preferences. In this representation, anchor objects define the main structure of a functional group, such as a bed in a bedroom or a sofa in a living room. Support objects depend on an anchor, such as a nightstand beside a bed or a chair paired with a desk. Accessories and low-priority objects are deferred until the main blocking furniture has been placed validly.
 
-Figure~\ref{fig:4-4} summarizes how the object program is connected to geometric solving, validation, repair, and scoring. The input consists of the semantic plan, the room model, and the furniture inventory. The object-program stage selects objects, compiles relations, and builds a solver-ready placement program. The geometric solver then generates anchor-based concepts, places furniture, validates hard constraints, repairs near-valid candidates when possible, and scores feasible layouts. The output is a set of candidate layouts with object coordinates, scores, and diagnostic information.
+Figure~\ref{fig:4-4} summarizes how the object program is connected to geometric solving, validation, repair, and scoring. The input consists of the semantic plan, the room model, and the inventory scope. The object-program stage selects active objects, builds relations, compiles constraints, and produces an object program. The geometric solver then generates concepts, places furniture, validates and repairs near-valid candidates when possible, and scores candidates. The output is a set of feasible layouts with object coordinates, scores, and diagnostic information.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\textwidth]{figures/chapter4/object_program_solver_flow.pdf}
-\caption{Object-program construction and geometric solving from structured requirements to validated furniture coordinates.}
+\caption{Object-program construction and geometric solving from semantic plan, room model, and inventory scope to feasible layouts.}
 \label{fig:4-4}
 \end{figure}
 

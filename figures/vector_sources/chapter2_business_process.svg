@@ -28,7 +28,7 @@
   <line class="line" x1="705" y1="355" x2="705" y2="380"/>
 
   <rect class="box" x="125" y="380" width="340" height="85"/>
-  <text class="label" x="295" y="423">Manual layout editing</text>
+  <text class="label" x="295" y="423">Manual layout creation</text>
   <rect class="box" x="535" y="380" width="340" height="85"/>
   <text class="label" x="705" y="413">Automatic layout</text>
   <text class="label" x="705" y="442">generation</text>
@@ -39,7 +39,7 @@
   <line class="line" x1="500" y1="520" x2="500" y2="565"/>
 
   <rect class="box" x="315" y="565" width="370" height="78"/>
-  <text class="label" x="500" y="604">Select and edit layout</text>
+  <text class="label" x="500" y="604">Select and refine layout</text>
   <line class="line" x1="500" y1="643" x2="500" y2="690"/>
 
   <rect class="box" x="330" y="690" width="340" height="78"/>
